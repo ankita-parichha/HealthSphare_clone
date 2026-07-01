@@ -1,0 +1,876 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Receptionists</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:20px;
+}
+
+.top-bar{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+}
+
+.search{
+width:70%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.add-btn{
+background:#22C069;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#5B3FC4;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #ddd;
+}
+
+.edit{
+background:#f39c12;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.delete{
+background:#e74c3c;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.status{
+color:green;
+font-weight:bold;
+}
+
+.modal{
+
+display:none;
+
+position:fixed;
+
+left:0;
+
+top:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(0,0,0,.5);
+
+}
+
+.modal-content{
+
+background:white;
+
+width:500px;
+
+margin:80px auto;
+
+padding:25px;
+
+border-radius:15px;
+
+position:relative;
+
+}
+
+.close{
+
+position:absolute;
+
+right:15px;
+
+top:10px;
+
+font-size:28px;
+
+cursor:pointer;
+
+color:red;
+
+}
+
+.modal input{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+border:1px solid #ccc;
+
+border-radius:8px;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>👩‍💼 Manage Receptionists</h1>
+
+<div class="top-bar">
+
+<input
+type="text"
+id="search"
+class="search"
+placeholder="Search Receptionist..."
+onkeyup="searchReceptionist()">
+
+<button
+class="add-btn"
+onclick="openModal()">
+
++ Add Receptionist
+
+</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Employee ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="receptionistTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ==========================
+Receptionist Modal
+========================== -->
+
+<div
+id="receptionistModal"
+class="modal">
+
+<div class="modal-content">
+
+<span
+class="close"
+onclick="closeModal()">
+
+&times;
+
+</span>
+
+<h2
+id="modalTitle">
+
+Add Receptionist
+
+</h2>
+
+<input
+type="hidden"
+id="receptionistId">
+
+<input
+type="text"
+id="first_name"
+placeholder="First Name">
+
+<br><br>
+
+<input
+type="text"
+id="last_name"
+placeholder="Last Name">
+
+<br><br>
+
+<select id="gender">
+
+<option value="">Select Gender</option>
+
+<option>Male</option>
+
+<option>Female</option>
+
+<option>Other</option>
+
+</select>
+
+<br><br>
+
+<input
+type="text"
+id="phone"
+placeholder="Phone">
+
+<br><br>
+
+<input
+type="email"
+id="email"
+placeholder="Email">
+
+<br><br>
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<br><br>
+
+<input
+type="text"
+id="address"
+placeholder="Address">
+
+<br><br>
+
+<input
+type="text"
+id="city"
+placeholder="City">
+
+<br><br>
+
+<input
+type="text"
+id="state"
+placeholder="State">
+
+<br><br>
+
+<input
+type="text"
+id="pincode"
+placeholder="Pincode">
+
+<br><br>
+
+<label>Joining Date</label>
+
+<input
+type="date"
+id="joining_date">
+
+<br><br>
+
+<label>Shift</label>
+
+<select id="shift">
+
+<option>Morning</option>
+
+<option>Evening</option>
+
+<option>Night</option>
+
+</select>
+
+<br><br>
+
+<label>Status</label>
+
+<select id="status">
+
+<option>Active</option>
+
+<option>Inactive</option>
+
+</select>
+
+<br><br>
+
+<button
+id="saveBtn"
+class="add-btn"
+onclick="saveReceptionist()">
+
+Save Receptionist
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+// ============================
+// Open Modal
+// ============================
+
+function openModal(){
+
+    clearForm();
+
+    document.getElementById("modalTitle").innerHTML =
+    "Add Receptionist";
+
+    document.getElementById("saveBtn").innerHTML =
+    "Save Receptionist";
+
+    document.getElementById("password").style.display =
+    "block";
+
+    document.getElementById("receptionistModal").style.display =
+    "block";
+
+}
+
+// ============================
+// Close Modal
+// ============================
+
+function closeModal(){
+
+    document.getElementById("receptionistModal").style.display =
+    "none";
+
+}
+
+// ============================
+// Clear Form
+// ============================
+
+function clearForm(){
+
+    document.getElementById("receptionistId").value = "";
+
+    document.getElementById("first_name").value = "";
+
+    document.getElementById("last_name").value = "";
+
+    document.getElementById("gender").value = "";
+
+    document.getElementById("phone").value = "";
+
+    document.getElementById("email").value = "";
+
+    document.getElementById("password").value = "";
+
+    document.getElementById("address").value = "";
+
+    document.getElementById("city").value = "";
+
+    document.getElementById("state").value = "";
+
+    document.getElementById("pincode").value = "";
+
+    document.getElementById("joining_date").value = "";
+
+    document.getElementById("shift").value = "Morning";
+
+    document.getElementById("status").value = "Active";
+
+}
+
+// ============================
+// Page Load
+// ============================
+
+window.onload = function(){
+
+    loadReceptionists();
+
+};
+// ============================
+// Load Receptionists
+// ============================
+
+let receptionistList = [];
+
+async function loadReceptionists(){
+
+try{
+
+const response = await fetch(
+"http://localhost:5000/api/receptionists"
+);
+
+const data = await response.json();
+
+if(!data.success){
+
+alert(data.message);
+
+return;
+
+}
+
+receptionistList = data.receptionists;
+
+const table =
+document.getElementById("receptionistTable");
+
+table.innerHTML="";
+
+data.receptionists.forEach(rec=>{
+
+table.innerHTML += `
+
+<tr>
+
+<td>${rec.receptionist_code}</td>
+
+<td>
+
+${rec.first_name}
+
+${rec.last_name}
+
+</td>
+
+<td>${rec.email}</td>
+
+<td>${rec.phone}</td>
+
+<td>
+
+<span class="status">
+
+${rec.status}
+
+</span>
+
+</td>
+
+<td>
+
+<button
+
+class="edit"
+
+onclick="editReceptionist(${rec.receptionist_id})">
+
+Edit
+
+</button>
+
+<button
+
+class="delete"
+
+onclick="deleteReceptionist(${rec.receptionist_id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+catch(error){
+
+console.log(error);
+
+alert("Unable to Load Receptionists");
+
+}
+
+}
+// ============================
+// Save Receptionist
+// ============================
+
+async function saveReceptionist(){
+
+const receptionistId =
+document.getElementById("receptionistId").value;
+
+const first_name =
+document.getElementById("first_name").value;
+
+const last_name =
+document.getElementById("last_name").value;
+
+const gender =
+document.getElementById("gender").value;
+
+const phone =
+document.getElementById("phone").value;
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+const address =
+document.getElementById("address").value;
+
+const city =
+document.getElementById("city").value;
+
+const state =
+document.getElementById("state").value;
+
+const pincode =
+document.getElementById("pincode").value;
+
+const joining_date =
+document.getElementById("joining_date").value;
+
+const shift =
+document.getElementById("shift").value;
+
+const status =
+document.getElementById("status").value;
+if(
+
+!first_name ||
+!last_name ||
+!gender ||
+!phone ||
+!email ||
+!address ||
+!city ||
+!state ||
+!pincode ||
+!joining_date ||
+!shift
+
+){
+
+alert("Please Fill All Fields");
+
+return;
+
+}
+
+let url;
+
+let method;
+
+let body;
+if(receptionistId==""){
+
+url="http://localhost:5000/api/receptionists/register";
+
+method="POST";
+
+body={
+
+first_name,
+last_name,
+gender,
+phone,
+email,
+address,
+city,
+state,
+pincode,
+joining_date,
+shift,
+password
+
+};
+
+}
+else{
+
+url="http://localhost:5000/api/receptionists/"+receptionistId;
+
+method="PUT";
+
+body={
+
+first_name,
+last_name,
+gender,
+phone,
+email,
+address,
+city,
+state,
+pincode,
+joining_date,
+shift,
+status
+
+};
+
+}
+try{
+
+const response = await fetch(
+
+url,
+
+{
+
+method,
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(body)
+
+}
+
+);
+
+const data = await response.json();
+
+alert(data.message);
+
+closeModal();
+
+clearForm();
+
+loadReceptionists();
+
+}
+
+catch(error){
+
+console.log(error);
+
+alert("Server Error");
+
+}
+
+
+}
+// ============================
+// Edit Receptionist
+// ============================
+
+function editReceptionist(id){
+
+const receptionist =
+receptionistList.find(
+
+r => r.receptionist_id == id
+
+);
+
+if(!receptionist){
+
+alert("Receptionist Not Found");
+
+return;
+
+}
+document.getElementById("receptionistId").value =
+receptionist.receptionist_id;
+
+document.getElementById("first_name").value =
+receptionist.first_name;
+
+document.getElementById("last_name").value =
+receptionist.last_name;
+
+document.getElementById("gender").value =
+receptionist.gender;
+
+document.getElementById("phone").value =
+receptionist.phone;
+
+document.getElementById("email").value =
+receptionist.email;
+
+document.getElementById("address").value =
+receptionist.address;
+
+document.getElementById("city").value =
+receptionist.city;
+
+document.getElementById("state").value =
+receptionist.state;
+
+document.getElementById("pincode").value =
+receptionist.pincode;
+
+document.getElementById("joining_date").value =
+receptionist.joining_date;
+
+document.getElementById("shift").value =
+receptionist.shift;
+
+document.getElementById("status").value =
+receptionist.status;
+document.getElementById("password").style.display =
+"none";
+
+document.getElementById("modalTitle").innerHTML =
+"Edit Receptionist";
+
+document.getElementById("saveBtn").innerHTML =
+"Update Receptionist";
+
+document.getElementById("receptionistModal").style.display =
+"block";
+
+
+}
+// ============================
+// Delete Receptionist
+// ============================
+
+async function deleteReceptionist(id){
+
+const confirmDelete = confirm(
+"Are you sure you want to delete this receptionist?"
+);
+
+if(!confirmDelete) return;
+
+try{
+
+const response = await fetch(
+
+"http://localhost:5000/api/receptionists/" + id,
+
+{
+
+method:"DELETE"
+
+}
+
+);
+
+const data = await response.json();
+
+alert(data.message);
+
+loadReceptionists();
+
+}
+
+catch(error){
+
+console.log(error);
+
+alert("Delete Failed");
+
+}
+
+}
+// ============================
+// Search Receptionist
+// ============================
+
+function searchReceptionist(){
+
+const keyword = document
+.getElementById("search")
+.value
+.toLowerCase();
+
+const rows =
+document.querySelectorAll("#receptionistTable tr");
+
+rows.forEach(row=>{
+
+const text =
+row.innerText.toLowerCase();
+
+if(text.includes(keyword)){
+
+row.style.display="";
+
+}
+else{
+
+row.style.display="none";
+
+}
+
+});
+
+}
+window.onclick = function(event){
+
+const modal =
+document.getElementById("receptionistModal");
+
+if(event.target == modal){
+
+closeModal();
+
+}
+
+}
+</script>
+
+</body>
+</html>
+

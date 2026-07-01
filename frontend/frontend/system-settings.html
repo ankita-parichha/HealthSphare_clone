@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - HealthSphere</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#2563eb;
+margin-bottom:20px;
+}
+
+.card{
+background:#f8faff;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+}
+
+.card h2{
+color:#2563eb;
+margin-bottom:15px;
+}
+
+input,
+select{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.logout{
+background:#ef4444;
+}
+
+.logout:hover{
+background:#dc2626;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>⚙️ Settings</h1>
+
+<div class="card">
+<h2>👤 Profile</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="text" id="phone" placeholder="Phone Number">
+
+<button onclick="saveProfile()">
+Save Profile
+</button>
+</div>
+
+<div class="card">
+<h2>🔒 Change Password</h2>
+
+<input type="password" id="password"
+placeholder="New Password">
+
+<input type="password" id="confirmPassword"
+placeholder="Confirm Password">
+
+<button onclick="changePassword()">
+Update Password
+</button>
+</div>
+
+<div class="card">
+<h2>🎨 Theme</h2>
+
+<select id="theme">
+<option>Light</option>
+<option>Dark</option>
+</select>
+
+<button onclick="saveTheme()">
+Save Theme
+</button>
+</div>
+
+<div class="card">
+<h2>🌐 Language</h2>
+
+<select id="language">
+<option>English</option>
+<option>Hindi</option>
+</select>
+
+<button onclick="saveLanguage()">
+Save Language
+</button>
+</div>
+
+<button class="logout" onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+<script>
+
+function saveProfile(){
+
+let profile={
+name:document.getElementById("name").value,
+email:document.getElementById("email").value,
+phone:document.getElementById("phone").value
+};
+
+localStorage.setItem(
+"profile",
+JSON.stringify(profile)
+);
+
+alert("Profile Saved");
+}
+
+function changePassword(){
+
+let p1=
+document.getElementById("password").value;
+
+let p2=
+document.getElementById("confirmPassword").value;
+
+if(p1!==p2){
+alert("Passwords do not match");
+return;
+}
+
+localStorage.setItem("password",p1);
+
+alert("Password Updated");
+}
+
+function saveTheme(){
+
+let theme=
+document.getElementById("theme").value;
+
+localStorage.setItem("theme",theme);
+
+if(theme==="Dark"){
+document.body.style.background="#111827";
+document.body.style.color="white";
+}
+else{
+document.body.style.background="#f4f7fc";
+document.body.style.color="black";
+}
+
+alert("Theme Saved");
+}
+
+function saveLanguage(){
+
+let language=
+document.getElementById("language").value;
+
+localStorage.setItem("language",language);
+
+alert("Language Saved");
+}
+
+function logout(){
+
+window.location.href="login.html";
+
+}
+
+</script>
+
+</body>
+</html>

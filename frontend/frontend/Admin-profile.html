@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Profile - HealthSphere</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+.profile{
+text-align:center;
+margin-bottom:30px;
+}
+
+.profile img{
+width:150px;
+height:150px;
+border-radius:50%;
+border:5px solid #5B3FC4;
+object-fit:cover;
+}
+
+h1{
+color:#5B3FC4;
+margin-top:15px;
+}
+
+.form-group{
+margin-bottom:15px;
+}
+
+label{
+display:block;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.btn{
+width:100%;
+padding:14px;
+background:#22C069;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+margin-top:15px;
+}
+
+.btn:hover{
+background:#169a51;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="profile">
+
+<img src="./logo.png" alt="Admin">
+
+<h1>Admin Profile</h1>
+<p>Hospital Administrator</p>
+
+</div>
+
+<div class="form-group">
+<label>Admin ID</label>
+<input type="text" value="ADM001">
+</div>
+
+<div class="form-group">
+<label>Full Name</label>
+<input type="text" value="Ankita Parichha">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" value="admin@healthsphere.com">
+</div>
+
+<div class="form-group">
+<label>Phone Number</label>
+<input type="text" value="9876543210">
+</div>
+
+<div class="form-group">
+<label>Role</label>
+<input type="text" value="Hospital Administrator">
+</div>
+
+<div class="form-group">
+<label>Address</label>
+<textarea rows="3">Bhubaneswar, Odisha</textarea>
+</div>
+
+<div class="form-group">
+<label>Change Password</label>
+<input type="password" placeholder="Enter New Password">
+</div>
+
+<button class="btn" onclick="updateProfile()">
+💾 Update Profile
+</button>
+
+</div>
+
+<script>
+
+function updateProfile(){
+alert("Admin Profile Updated Successfully!");
+}
+
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manage Departments</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 20px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+color:white;
+background:#22C069;
+}
+
+ul{
+margin-top:20px;
+list-style:none;
+}
+
+li{
+background:#f8f9ff;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+display:flex;
+justify-content:space-between;
+}
+
+.modal{
+
+display:none;
+
+position:fixed;
+
+left:0;
+
+top:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(0,0,0,.5);
+
+}
+
+.modal-content{
+
+background:white;
+
+width:550px;
+
+margin:60px auto;
+
+padding:25px;
+
+border-radius:15px;
+
+position:relative;
+
+}
+
+.close{
+
+position:absolute;
+
+right:20px;
+
+top:10px;
+
+font-size:28px;
+
+cursor:pointer;
+
+color:red;
+
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>🏥 Manage Departments</h1>
+
+<input
+type="text"
+id="search"
+placeholder="Search Department..."
+onkeyup="searchDepartment()">
+
+<!-- Add Department Button -->
+
+<button
+class="add-btn"
+onclick="openModal()">
+
++ Add Department
+
+</button>
+
+<!-- Department Modal -->
+
+<div id="departmentModal" class="modal">
+
+<div class="modal-content">
+
+<span
+class="close"
+onclick="closeModal()">
+
+&times;
+
+</span>
+
+<h2 id="modalTitle">
+
+Add Department
+
+</h2>
+
+<input
+type="hidden"
+id="departmentId">
+
+<input
+type="text"
+id="department_name"
+placeholder="Department Name">
+
+<br><br>
+
+<input
+type="text"
+id="department_head"
+placeholder="Department Head">
+
+<br><br>
+
+<input
+type="text"
+id="location"
+placeholder="Location">
+
+<br><br>
+
+<textarea
+id="description"
+placeholder="Description"
+style="width:100%;height:100px;padding:12px;border:1px solid #ccc;border-radius:8px;"></textarea>
+
+<br><br>
+
+<button
+id="saveBtn"
+class="add-btn"
+onclick="saveDepartment()">
+
+Save Department
+
+</button>
+
+</div>
+
+</div>
+<ul id="departmentList"></ul>
+
+</div>
+
+<script>
+
+let departmentList = [];
+
+window.onload = function(){
+
+loadDepartments();
+
+};
+
+// =======================
+// Load Departments
+// =======================
+
+async function loadDepartments(){
+
+try{
+
+const response = await fetch(
+"http://localhost:5000/api/departments"
+);
+
+const data = await response.json();
+
+departmentList = data.departments;
+
+const list = document.getElementById("departmentList");
+
+list.innerHTML = "";
+
+data.departments.forEach(dept=>{
+
+list.innerHTML += `
+
+<li>
+
+<div>
+
+<b>${dept.department_name}</b><br>
+
+Head : ${dept.department_head}<br>
+
+Location : ${dept.location}
+
+</div>
+
+<div>
+
+<button onclick="editDepartment(${dept.department_id})">
+Edit
+</button>
+
+<button
+style="background:red"
+onclick="deleteDepartment(${dept.department_id})">
+Delete
+</button>
+
+</div>
+
+</li>
+
+`;
+
+});
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
+// =======================
+// Add Department
+// =======================
+
+// =======================
+// Save Department
+// =======================
+
+async function saveDepartment(){
+
+const departmentId =
+document.getElementById("departmentId").value;
+
+const department_name =
+document.getElementById("department_name").value;
+
+const department_head =
+document.getElementById("department_head").value;
+
+const location =
+document.getElementById("location").value;
+
+const description =
+document.getElementById("description").value;
+
+if(
+
+!department_name ||
+!department_head ||
+!location ||
+!description
+
+){
+
+alert("Please Fill All Fields");
+
+return;
+
+}
+
+let url;
+let method;
+
+if(departmentId==""){
+
+url="http://localhost:5000/api/departments/register";
+
+method="POST";
+
+}else{
+
+url="http://localhost:5000/api/departments/"+departmentId;
+
+method="PUT";
+
+}
+
+try{
+
+const response = await fetch(
+
+url,
+
+{
+
+method:method,
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+department_name,
+department_head,
+location,
+description
+
+})
+
+}
+
+);
+
+const data = await response.json();
+
+alert(data.message);
+
+closeModal();
+
+clearForm();
+
+loadDepartments();
+
+}catch(error){
+
+console.log(error);
+
+alert("Server Error");
+
+}
+
+}
+// =======================
+// Edit Department
+// =======================
+
+function editDepartment(id){
+
+const dept = departmentList.find(
+
+d => d.department_id == id
+
+);
+
+if(!dept){
+
+alert("Department Not Found");
+
+return;
+
+}
+
+document.getElementById("departmentId").value =
+dept.department_id;
+
+document.getElementById("department_name").value =
+dept.department_name;
+
+document.getElementById("department_head").value =
+dept.department_head;
+
+document.getElementById("location").value =
+dept.location;
+
+document.getElementById("description").value =
+dept.description;
+
+document.getElementById("modalTitle").innerHTML =
+"Edit Department";
+
+document.getElementById("saveBtn").innerHTML =
+"Update Department";
+
+document.getElementById("departmentModal").style.display =
+"block";
+
+}
+// =======================
+// Delete Department
+// =======================
+
+// =======================
+// Delete Department
+// =======================
+
+async function deleteDepartment(id){
+
+const confirmDelete = confirm(
+
+"Delete this Department?"
+
+);
+
+if(!confirmDelete) return;
+
+try{
+
+const response = await fetch(
+
+"http://localhost:5000/api/departments/"+id,
+
+{
+
+method:"DELETE"
+
+}
+
+);
+
+const data = await response.json();
+
+alert(data.message);
+
+loadDepartments();
+
+}catch(error){
+
+console.log(error);
+
+alert("Delete Failed");
+
+}
+
+}
+// =======================
+// Open Modal
+// =======================
+
+function openModal(){
+
+clearForm();
+
+document.getElementById("modalTitle").innerHTML="Add Department";
+
+document.getElementById("saveBtn").innerHTML="Save Department";
+
+document.getElementById("departmentModal").style.display="block";
+
+}
+// =======================
+// Close Modal
+// =======================
+
+function closeModal(){
+
+document.getElementById("departmentModal").style.display =
+"none";
+
+}
+// =======================
+// Clear Form
+// =======================
+
+function clearForm(){
+
+document.getElementById("departmentId").value="";
+
+document.getElementById("department_name").value="";
+
+document.getElementById("department_head").value="";
+
+document.getElementById("location").value="";
+
+document.getElementById("description").value="";
+
+}
+// =======================
+// Search Department
+// =======================
+
+function searchDepartment(){
+
+const keyword =
+
+document.getElementById("search")
+.value.toLowerCase();
+
+const rows =
+
+document.querySelectorAll("#departmentList li");
+
+rows.forEach(row=>{
+
+const text =
+
+row.innerText.toLowerCase();
+
+if(text.includes(keyword)){
+
+row.style.display="flex";
+
+}else{
+
+row.style.display="none";
+
+}
+
+});
+
+}
+window.onclick = function(event){
+
+const modal =
+
+document.getElementById("departmentModal");
+
+if(event.target == modal){
+
+closeModal();
+
+}
+
+}
+</script>
+
+
+</body>
+</html>
+

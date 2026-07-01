@@ -1,0 +1,1754 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict MmripwY8hJP2Bm4NuleZcqXWxuTNlnpbSVolqTgqSMwsvJisUSKOw5vmBoJyedn
+
+-- Dumped from database version 18.4
+-- Dumped by pg_dump version 18.4
+
+-- Started on 2026-06-26 14:25:51
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 5 (class 2615 OID 24678)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- TOC entry 5251 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS '';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 222 (class 1259 OID 24697)
+-- Name: admins; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.admins (
+    admin_id integer NOT NULL,
+    user_id integer,
+    employee_id character varying(20) NOT NULL,
+    phone character varying(15),
+    address text
+);
+
+
+ALTER TABLE public.admins OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 24696)
+-- Name: admins_admin_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.admins_admin_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.admins_admin_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5253 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: admins_admin_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.admins_admin_id_seq OWNED BY public.admins.admin_id;
+
+
+--
+-- TOC entry 232 (class 1259 OID 24806)
+-- Name: appointments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.appointments (
+    appointment_id integer NOT NULL,
+    appointment_number character varying(20) NOT NULL,
+    patient_id integer NOT NULL,
+    doctor_id integer NOT NULL,
+    receptionist_id integer,
+    department_id integer,
+    appointment_date date NOT NULL,
+    appointment_time time without time zone NOT NULL,
+    reason text,
+    status character varying(20) DEFAULT 'Pending'::character varying,
+    notes text,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT appointments_status_check CHECK (((status)::text = ANY ((ARRAY['Pending'::character varying, 'Confirmed'::character varying, 'Completed'::character varying, 'Cancelled'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.appointments OWNER TO postgres;
+
+--
+-- TOC entry 231 (class 1259 OID 24805)
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.appointments_appointment_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.appointments_appointment_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5254 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.appointments_appointment_id_seq OWNED BY public.appointments.appointment_id;
+
+
+--
+-- TOC entry 242 (class 1259 OID 24950)
+-- Name: billing; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.billing (
+    bill_id integer NOT NULL,
+    patient_id integer NOT NULL,
+    appointment_id integer,
+    consultation_fee numeric(10,2) DEFAULT 0,
+    medicine_charge numeric(10,2) DEFAULT 0,
+    lab_charge numeric(10,2) DEFAULT 0,
+    other_charge numeric(10,2) DEFAULT 0,
+    total_amount numeric(10,2) NOT NULL,
+    payment_status character varying(20) DEFAULT 'Pending'::character varying,
+    bill_date date DEFAULT CURRENT_DATE,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT billing_payment_status_check CHECK (((payment_status)::text = ANY ((ARRAY['Pending'::character varying, 'Paid'::character varying, 'Partial'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.billing OWNER TO postgres;
+
+--
+-- TOC entry 241 (class 1259 OID 24949)
+-- Name: billing_bill_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.billing_bill_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.billing_bill_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5255 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: billing_bill_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.billing_bill_id_seq OWNED BY public.billing.bill_id;
+
+
+--
+-- TOC entry 250 (class 1259 OID 25040)
+-- Name: bills; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.bills (
+    bill_id integer NOT NULL,
+    bill_number character varying(30) NOT NULL,
+    appointment_id integer,
+    patient_id integer,
+    doctor_id integer,
+    amount numeric(10,2) NOT NULL,
+    payment_status character varying(20) DEFAULT 'Pending'::character varying,
+    payment_method character varying(50),
+    payment_date timestamp without time zone,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.bills OWNER TO postgres;
+
+--
+-- TOC entry 249 (class 1259 OID 25039)
+-- Name: bills_bill_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.bills_bill_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.bills_bill_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5256 (class 0 OID 0)
+-- Dependencies: 249
+-- Name: bills_bill_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.bills_bill_id_seq OWNED BY public.bills.bill_id;
+
+
+--
+-- TOC entry 230 (class 1259 OID 24792)
+-- Name: departments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.departments (
+    department_id integer NOT NULL,
+    department_name character varying(100) NOT NULL,
+    department_head character varying(100),
+    location character varying(100),
+    description text,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.departments OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1259 OID 24791)
+-- Name: departments_department_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.departments_department_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.departments_department_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5257 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: departments_department_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.departments_department_id_seq OWNED BY public.departments.department_id;
+
+
+--
+-- TOC entry 226 (class 1259 OID 24741)
+-- Name: doctors; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.doctors (
+    doctor_id integer NOT NULL,
+    user_id integer,
+    doctor_code character varying(20) NOT NULL,
+    first_name character varying(50) NOT NULL,
+    last_name character varying(50) NOT NULL,
+    gender character varying(10),
+    specialization character varying(100) NOT NULL,
+    qualification character varying(100),
+    experience integer,
+    phone character varying(15),
+    email character varying(100),
+    consultation_fee numeric(10,2),
+    address text,
+    city character varying(50),
+    state character varying(50),
+    pincode character varying(10),
+    joining_date date,
+    status character varying(20) DEFAULT 'Active'::character varying,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT doctors_gender_check CHECK (((gender)::text = ANY ((ARRAY['Male'::character varying, 'Female'::character varying, 'Other'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.doctors OWNER TO postgres;
+
+--
+-- TOC entry 225 (class 1259 OID 24740)
+-- Name: doctors_doctor_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.doctors_doctor_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.doctors_doctor_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5258 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: doctors_doctor_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.doctors_doctor_id_seq OWNED BY public.doctors.doctor_id;
+
+
+--
+-- TOC entry 246 (class 1259 OID 24995)
+-- Name: feedback; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.feedback (
+    feedback_id integer NOT NULL,
+    patient_id integer NOT NULL,
+    doctor_id integer,
+    rating integer,
+    comments text,
+    feedback_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT feedback_rating_check CHECK (((rating >= 1) AND (rating <= 5)))
+);
+
+
+ALTER TABLE public.feedback OWNER TO postgres;
+
+--
+-- TOC entry 245 (class 1259 OID 24994)
+-- Name: feedback_feedback_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.feedback_feedback_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.feedback_feedback_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5259 (class 0 OID 0)
+-- Dependencies: 245
+-- Name: feedback_feedback_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.feedback_feedback_id_seq OWNED BY public.feedback.feedback_id;
+
+
+--
+-- TOC entry 238 (class 1259 OID 24907)
+-- Name: lab_reports; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lab_reports (
+    report_id integer NOT NULL,
+    patient_id integer NOT NULL,
+    doctor_id integer NOT NULL,
+    appointment_id integer,
+    test_name character varying(100) NOT NULL,
+    test_result text,
+    normal_range character varying(100),
+    report_date date DEFAULT CURRENT_DATE,
+    remarks text,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.lab_reports OWNER TO postgres;
+
+--
+-- TOC entry 237 (class 1259 OID 24906)
+-- Name: lab_reports_report_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lab_reports_report_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.lab_reports_report_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5260 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: lab_reports_report_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.lab_reports_report_id_seq OWNED BY public.lab_reports.report_id;
+
+
+--
+-- TOC entry 234 (class 1259 OID 24846)
+-- Name: medical_records; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.medical_records (
+    record_id integer NOT NULL,
+    patient_id integer NOT NULL,
+    doctor_id integer NOT NULL,
+    appointment_id integer,
+    diagnosis text NOT NULL,
+    symptoms text,
+    treatment text,
+    height numeric(5,2),
+    weight numeric(5,2),
+    blood_pressure character varying(20),
+    temperature numeric(4,1),
+    allergies text,
+    remarks text,
+    visit_date date DEFAULT CURRENT_DATE,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.medical_records OWNER TO postgres;
+
+--
+-- TOC entry 233 (class 1259 OID 24845)
+-- Name: medical_records_record_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.medical_records_record_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.medical_records_record_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5261 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: medical_records_record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.medical_records_record_id_seq OWNED BY public.medical_records.record_id;
+
+
+--
+-- TOC entry 240 (class 1259 OID 24937)
+-- Name: medicines; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.medicines (
+    medicine_id integer NOT NULL,
+    medicine_name character varying(100) NOT NULL,
+    category character varying(100),
+    manufacturer character varying(100),
+    batch_no character varying(50),
+    expiry_date date,
+    quantity integer DEFAULT 0,
+    price numeric(10,2),
+    description text,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.medicines OWNER TO postgres;
+
+--
+-- TOC entry 239 (class 1259 OID 24936)
+-- Name: medicines_medicine_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.medicines_medicine_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.medicines_medicine_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5262 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: medicines_medicine_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.medicines_medicine_id_seq OWNED BY public.medicines.medicine_id;
+
+
+--
+-- TOC entry 248 (class 1259 OID 25018)
+-- Name: notifications; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.notifications (
+    notification_id integer NOT NULL,
+    user_id integer NOT NULL,
+    title character varying(150),
+    message text,
+    notification_type character varying(30),
+    is_read boolean DEFAULT false,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.notifications OWNER TO postgres;
+
+--
+-- TOC entry 247 (class 1259 OID 25017)
+-- Name: notifications_notification_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.notifications_notification_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.notifications_notification_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5263 (class 0 OID 0)
+-- Dependencies: 247
+-- Name: notifications_notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.notifications_notification_id_seq OWNED BY public.notifications.notification_id;
+
+
+--
+-- TOC entry 224 (class 1259 OID 24717)
+-- Name: patients; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.patients (
+    patient_id integer NOT NULL,
+    user_id integer,
+    patient_code character varying(20) NOT NULL,
+    gender character varying(10),
+    blood_group character varying(5),
+    phone character varying(15),
+    email character varying(100),
+    address text,
+    city character varying(50),
+    state character varying(50),
+    pincode character varying(10),
+    emergency_contact_name character varying(100),
+    emergency_contact_phone character varying(15),
+    allergies text,
+    medical_history text,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    full_name character varying(100),
+    age integer,
+    CONSTRAINT patients_gender_check CHECK (((gender)::text = ANY ((ARRAY['Male'::character varying, 'Female'::character varying, 'Other'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.patients OWNER TO postgres;
+
+--
+-- TOC entry 223 (class 1259 OID 24716)
+-- Name: patients_patient_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.patients_patient_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.patients_patient_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5264 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: patients_patient_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.patients_patient_id_seq OWNED BY public.patients.patient_id;
+
+
+--
+-- TOC entry 244 (class 1259 OID 24978)
+-- Name: payments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.payments (
+    payment_id integer NOT NULL,
+    bill_id integer NOT NULL,
+    amount numeric(10,2) NOT NULL,
+    payment_method character varying(30),
+    transaction_id character varying(100),
+    payment_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT payments_payment_method_check CHECK (((payment_method)::text = ANY ((ARRAY['Cash'::character varying, 'Card'::character varying, 'UPI'::character varying, 'Net Banking'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.payments OWNER TO postgres;
+
+--
+-- TOC entry 243 (class 1259 OID 24977)
+-- Name: payments_payment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.payments_payment_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.payments_payment_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5265 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: payments_payment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.payments_payment_id_seq OWNED BY public.payments.payment_id;
+
+
+--
+-- TOC entry 236 (class 1259 OID 24876)
+-- Name: prescriptions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.prescriptions (
+    prescription_id integer NOT NULL,
+    patient_id integer NOT NULL,
+    doctor_id integer NOT NULL,
+    appointment_id integer,
+    prescription_date date DEFAULT CURRENT_DATE,
+    medicines text NOT NULL,
+    dosage text,
+    instructions text,
+    next_visit date,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.prescriptions OWNER TO postgres;
+
+--
+-- TOC entry 235 (class 1259 OID 24875)
+-- Name: prescriptions_prescription_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.prescriptions_prescription_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.prescriptions_prescription_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5266 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: prescriptions_prescription_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.prescriptions_prescription_id_seq OWNED BY public.prescriptions.prescription_id;
+
+
+--
+-- TOC entry 228 (class 1259 OID 24767)
+-- Name: receptionists; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.receptionists (
+    receptionist_id integer NOT NULL,
+    user_id integer,
+    receptionist_code character varying(20) NOT NULL,
+    first_name character varying(50) NOT NULL,
+    last_name character varying(50) NOT NULL,
+    gender character varying(10),
+    phone character varying(15),
+    email character varying(100),
+    address text,
+    city character varying(50),
+    state character varying(50),
+    pincode character varying(10),
+    joining_date date,
+    shift character varying(20),
+    status character varying(20) DEFAULT 'Active'::character varying,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT receptionists_gender_check CHECK (((gender)::text = ANY ((ARRAY['Male'::character varying, 'Female'::character varying, 'Other'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.receptionists OWNER TO postgres;
+
+--
+-- TOC entry 227 (class 1259 OID 24766)
+-- Name: receptionists_receptionist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.receptionists_receptionist_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.receptionists_receptionist_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5267 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: receptionists_receptionist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.receptionists_receptionist_id_seq OWNED BY public.receptionists.receptionist_id;
+
+
+--
+-- TOC entry 220 (class 1259 OID 24681)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    user_id integer NOT NULL,
+    full_name character varying(100) NOT NULL,
+    email character varying(100) NOT NULL,
+    password character varying(255) NOT NULL,
+    role character varying(20) NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT users_role_check CHECK (((role)::text = ANY ((ARRAY['Admin'::character varying, 'Doctor'::character varying, 'Receptionist'::character varying, 'Patient'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 24680)
+-- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.users_user_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5268 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
+
+
+--
+-- TOC entry 4933 (class 2604 OID 24700)
+-- Name: admins admin_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admins ALTER COLUMN admin_id SET DEFAULT nextval('public.admins_admin_id_seq'::regclass);
+
+
+--
+-- TOC entry 4944 (class 2604 OID 24809)
+-- Name: appointments appointment_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments ALTER COLUMN appointment_id SET DEFAULT nextval('public.appointments_appointment_id_seq'::regclass);
+
+
+--
+-- TOC entry 4959 (class 2604 OID 24953)
+-- Name: billing bill_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.billing ALTER COLUMN bill_id SET DEFAULT nextval('public.billing_bill_id_seq'::regclass);
+
+
+--
+-- TOC entry 4974 (class 2604 OID 25043)
+-- Name: bills bill_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.bills ALTER COLUMN bill_id SET DEFAULT nextval('public.bills_bill_id_seq'::regclass);
+
+
+--
+-- TOC entry 4942 (class 2604 OID 24795)
+-- Name: departments department_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.departments ALTER COLUMN department_id SET DEFAULT nextval('public.departments_department_id_seq'::regclass);
+
+
+--
+-- TOC entry 4936 (class 2604 OID 24744)
+-- Name: doctors doctor_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.doctors ALTER COLUMN doctor_id SET DEFAULT nextval('public.doctors_doctor_id_seq'::regclass);
+
+
+--
+-- TOC entry 4969 (class 2604 OID 24998)
+-- Name: feedback feedback_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feedback ALTER COLUMN feedback_id SET DEFAULT nextval('public.feedback_feedback_id_seq'::regclass);
+
+
+--
+-- TOC entry 4953 (class 2604 OID 24910)
+-- Name: lab_reports report_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lab_reports ALTER COLUMN report_id SET DEFAULT nextval('public.lab_reports_report_id_seq'::regclass);
+
+
+--
+-- TOC entry 4947 (class 2604 OID 24849)
+-- Name: medical_records record_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medical_records ALTER COLUMN record_id SET DEFAULT nextval('public.medical_records_record_id_seq'::regclass);
+
+
+--
+-- TOC entry 4956 (class 2604 OID 24940)
+-- Name: medicines medicine_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medicines ALTER COLUMN medicine_id SET DEFAULT nextval('public.medicines_medicine_id_seq'::regclass);
+
+
+--
+-- TOC entry 4971 (class 2604 OID 25021)
+-- Name: notifications notification_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notifications ALTER COLUMN notification_id SET DEFAULT nextval('public.notifications_notification_id_seq'::regclass);
+
+
+--
+-- TOC entry 4934 (class 2604 OID 24720)
+-- Name: patients patient_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patients ALTER COLUMN patient_id SET DEFAULT nextval('public.patients_patient_id_seq'::regclass);
+
+
+--
+-- TOC entry 4967 (class 2604 OID 24981)
+-- Name: payments payment_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments ALTER COLUMN payment_id SET DEFAULT nextval('public.payments_payment_id_seq'::regclass);
+
+
+--
+-- TOC entry 4950 (class 2604 OID 24879)
+-- Name: prescriptions prescription_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.prescriptions ALTER COLUMN prescription_id SET DEFAULT nextval('public.prescriptions_prescription_id_seq'::regclass);
+
+
+--
+-- TOC entry 4939 (class 2604 OID 24770)
+-- Name: receptionists receptionist_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.receptionists ALTER COLUMN receptionist_id SET DEFAULT nextval('public.receptionists_receptionist_id_seq'::regclass);
+
+
+--
+-- TOC entry 4931 (class 2604 OID 24684)
+-- Name: users user_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
+
+
+--
+-- TOC entry 5217 (class 0 OID 24697)
+-- Dependencies: 222
+-- Data for Name: admins; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.admins (admin_id, user_id, employee_id, phone, address) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5227 (class 0 OID 24806)
+-- Dependencies: 232
+-- Data for Name: appointments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.appointments (appointment_id, appointment_number, patient_id, doctor_id, receptionist_id, department_id, appointment_date, appointment_time, reason, status, notes, created_at) FROM stdin;
+1	APT1782406348941	1	1	\N	\N	2026-06-27	03:22:00	asdfghjk	Pending	\N	2026-06-25 22:22:28.942486
+3	APT1782410125881	1	2	\N	\N	2026-06-26	04:25:00	asdfghjkl	Confirmed	\N	2026-06-25 23:25:25.883114
+2	APT1782408607933	1	2	\N	\N	2026-06-27	02:02:00	aasdfghj	Confirmed	\N	2026-06-25 23:00:07.934386
+5	APT1782412189636	1	2	\N	\N	2026-06-26	05:59:00	qwertyuiop	Pending	\N	2026-06-25 23:59:49.637936
+4	APT1782411388824	1	2	\N	\N	2026-06-26	04:25:00	asdfghjkl	Confirmed	\N	2026-06-25 23:46:28.826245
+\.
+
+
+--
+-- TOC entry 5237 (class 0 OID 24950)
+-- Dependencies: 242
+-- Data for Name: billing; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.billing (bill_id, patient_id, appointment_id, consultation_fee, medicine_charge, lab_charge, other_charge, total_amount, payment_status, bill_date, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5245 (class 0 OID 25040)
+-- Dependencies: 250
+-- Data for Name: bills; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.bills (bill_id, bill_number, appointment_id, patient_id, doctor_id, amount, payment_status, payment_method, payment_date, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5225 (class 0 OID 24792)
+-- Dependencies: 230
+-- Data for Name: departments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.departments (department_id, department_name, department_head, location, description, created_at) FROM stdin;
+1	Cardiology	Dr. Amit Kumar	Block A	Heart and cardiovascular care	2026-06-25 10:53:03.477535
+2	Neurology	Dr. Priya Sharma	Block B	Brain and nervous system	2026-06-25 10:53:03.477535
+3	Orthopedics	Dr. Rajesh Singh	Block C	Bone and joint treatment	2026-06-25 10:53:03.477535
+4	Pediatrics	Dr. Neha Das	Block D	Child healthcare	2026-06-25 10:53:03.477535
+5	Dermatology	Dr. Rahul Roy	Block E	Skin care	2026-06-25 10:53:03.477535
+6	Emergency	Dr. S. Mishra	Ground Floor	24x7 Emergency Services	2026-06-25 10:53:03.477535
+7	Radiology	Dr. K. Mohanty	Block F	X-Ray, CT Scan, MRI	2026-06-25 10:53:03.477535
+8	Pharmacy	Mr. S. Behera	Ground Floor	Medicine Distribution	2026-06-25 10:53:03.477535
+9	Laboratory	Dr. Ananya Das	Block G	Blood and Diagnostic Tests	2026-06-25 10:53:03.477535
+\.
+
+
+--
+-- TOC entry 5221 (class 0 OID 24741)
+-- Dependencies: 226
+-- Data for Name: doctors; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.doctors (doctor_id, user_id, doctor_code, first_name, last_name, gender, specialization, qualification, experience, phone, email, consultation_fee, address, city, state, pincode, joining_date, status, created_at) FROM stdin;
+1	5	DOC0005	Ankita	Parichha	Female	Dentist	phd	2	6372078282	ankitaparichha12@gmail.com	500.00	\N	\N	\N	\N	\N	Active	2026-06-25 15:50:47.381736
+2	6	DOC0006	pratyush	katia	Male	Psychiatrist	phd	3	9638527418	pratyushkatia@gmail.com	800.00	\N	\N	\N	\N	\N	Active	2026-06-25 16:14:29.31489
+3	7	DOC0007	sakti 	pattnaik	Male	parthologic	mbbs	1	7410852963.5	saktipattnaik@gmail.com	500.00	\N	\N	\N	\N	\N	Active	2026-06-26 12:53:02.251031
+\.
+
+
+--
+-- TOC entry 5241 (class 0 OID 24995)
+-- Dependencies: 246
+-- Data for Name: feedback; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.feedback (feedback_id, patient_id, doctor_id, rating, comments, feedback_date) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5233 (class 0 OID 24907)
+-- Dependencies: 238
+-- Data for Name: lab_reports; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.lab_reports (report_id, patient_id, doctor_id, appointment_id, test_name, test_result, normal_range, report_date, remarks, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5229 (class 0 OID 24846)
+-- Dependencies: 234
+-- Data for Name: medical_records; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.medical_records (record_id, patient_id, doctor_id, appointment_id, diagnosis, symptoms, treatment, height, weight, blood_pressure, temperature, allergies, remarks, visit_date, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5235 (class 0 OID 24937)
+-- Dependencies: 240
+-- Data for Name: medicines; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.medicines (medicine_id, medicine_name, category, manufacturer, batch_no, expiry_date, quantity, price, description, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5243 (class 0 OID 25018)
+-- Dependencies: 248
+-- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.notifications (notification_id, user_id, title, message, notification_type, is_read, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5219 (class 0 OID 24717)
+-- Dependencies: 224
+-- Data for Name: patients; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.patients (patient_id, user_id, patient_code, gender, blood_group, phone, email, address, city, state, pincode, emergency_contact_name, emergency_contact_phone, allergies, medical_history, created_at, full_name, age) FROM stdin;
+1	1	PAT0001	Female	O+	6372078282	ankitaparichha123@gmail.com	asdfghjk	\N	\N	\N	ankita	6372078285	\N	\N	2026-06-25 12:23:42.85008	Ankita Parichha	21
+\.
+
+
+--
+-- TOC entry 5239 (class 0 OID 24978)
+-- Dependencies: 244
+-- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.payments (payment_id, bill_id, amount, payment_method, transaction_id, payment_date) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5231 (class 0 OID 24876)
+-- Dependencies: 236
+-- Data for Name: prescriptions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.prescriptions (prescription_id, patient_id, doctor_id, appointment_id, prescription_date, medicines, dosage, instructions, next_visit, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5223 (class 0 OID 24767)
+-- Dependencies: 228
+-- Data for Name: receptionists; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.receptionists (receptionist_id, user_id, receptionist_code, first_name, last_name, gender, phone, email, address, city, state, pincode, joining_date, shift, status, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5215 (class 0 OID 24681)
+-- Dependencies: 220
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (user_id, full_name, email, password, role, created_at) FROM stdin;
+1	Ankita Parichha	ankitaparichha123@gmail.com	$2b$10$RFvYD2j4Ib5D6ZYN7VsBkel9b5WbI.lvTT/SDPANL/E0NCv8ZOe0m	Patient	2026-06-25 12:23:42.828045
+5	Ankita Parichha	ankitaparichha12@gmail.com	$2b$10$C4MsxzUCyI8QxVOeesOsheHoLN9Vwmnrf.6HcXbJdSKmViR97t2tW	Doctor	2026-06-25 15:50:47.368967
+6	pratyush katia	pratyushkatia@gmail.com	$2b$10$geBXfCGjWhp3cVI1Yfwxne072gr2VMIxNEUdtKN3y3slA/teMtPiq	Doctor	2026-06-25 16:14:29.294791
+7	sakti  pattnaik	saktipattnaik@gmail.com	$2b$10$BCJb3R36cv8U4oiN5dojs.oR84Y/gpSJYa7OTmIovOmcUIr1A7gca	Doctor	2026-06-26 12:53:02.238623
+\.
+
+
+--
+-- TOC entry 5269 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: admins_admin_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.admins_admin_id_seq', 1, false);
+
+
+--
+-- TOC entry 5270 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.appointments_appointment_id_seq', 5, true);
+
+
+--
+-- TOC entry 5271 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: billing_bill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.billing_bill_id_seq', 1, false);
+
+
+--
+-- TOC entry 5272 (class 0 OID 0)
+-- Dependencies: 249
+-- Name: bills_bill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.bills_bill_id_seq', 1, false);
+
+
+--
+-- TOC entry 5273 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: departments_department_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.departments_department_id_seq', 9, true);
+
+
+--
+-- TOC entry 5274 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: doctors_doctor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.doctors_doctor_id_seq', 3, true);
+
+
+--
+-- TOC entry 5275 (class 0 OID 0)
+-- Dependencies: 245
+-- Name: feedback_feedback_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.feedback_feedback_id_seq', 1, false);
+
+
+--
+-- TOC entry 5276 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: lab_reports_report_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lab_reports_report_id_seq', 1, false);
+
+
+--
+-- TOC entry 5277 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: medical_records_record_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.medical_records_record_id_seq', 1, false);
+
+
+--
+-- TOC entry 5278 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: medicines_medicine_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.medicines_medicine_id_seq', 1, false);
+
+
+--
+-- TOC entry 5279 (class 0 OID 0)
+-- Dependencies: 247
+-- Name: notifications_notification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.notifications_notification_id_seq', 1, false);
+
+
+--
+-- TOC entry 5280 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: patients_patient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.patients_patient_id_seq', 1, true);
+
+
+--
+-- TOC entry 5281 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: payments_payment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.payments_payment_id_seq', 1, false);
+
+
+--
+-- TOC entry 5282 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: prescriptions_prescription_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.prescriptions_prescription_id_seq', 1, false);
+
+
+--
+-- TOC entry 5283 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: receptionists_receptionist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.receptionists_receptionist_id_seq', 1, false);
+
+
+--
+-- TOC entry 5284 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_user_id_seq', 7, true);
+
+
+--
+-- TOC entry 4990 (class 2606 OID 24710)
+-- Name: admins admins_employee_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admins
+    ADD CONSTRAINT admins_employee_id_key UNIQUE (employee_id);
+
+
+--
+-- TOC entry 4992 (class 2606 OID 24706)
+-- Name: admins admins_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admins
+    ADD CONSTRAINT admins_pkey PRIMARY KEY (admin_id);
+
+
+--
+-- TOC entry 4994 (class 2606 OID 24708)
+-- Name: admins admins_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admins
+    ADD CONSTRAINT admins_user_id_key UNIQUE (user_id);
+
+
+--
+-- TOC entry 5018 (class 2606 OID 24824)
+-- Name: appointments appointments_appointment_number_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT appointments_appointment_number_key UNIQUE (appointment_number);
+
+
+--
+-- TOC entry 5020 (class 2606 OID 24822)
+-- Name: appointments appointments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT appointments_pkey PRIMARY KEY (appointment_id);
+
+
+--
+-- TOC entry 5030 (class 2606 OID 24966)
+-- Name: billing billing_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.billing
+    ADD CONSTRAINT billing_pkey PRIMARY KEY (bill_id);
+
+
+--
+-- TOC entry 5038 (class 2606 OID 25052)
+-- Name: bills bills_bill_number_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.bills
+    ADD CONSTRAINT bills_bill_number_key UNIQUE (bill_number);
+
+
+--
+-- TOC entry 5040 (class 2606 OID 25050)
+-- Name: bills bills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.bills
+    ADD CONSTRAINT bills_pkey PRIMARY KEY (bill_id);
+
+
+--
+-- TOC entry 5014 (class 2606 OID 24804)
+-- Name: departments departments_department_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT departments_department_name_key UNIQUE (department_name);
+
+
+--
+-- TOC entry 5016 (class 2606 OID 24802)
+-- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT departments_pkey PRIMARY KEY (department_id);
+
+
+--
+-- TOC entry 5002 (class 2606 OID 24760)
+-- Name: doctors doctors_doctor_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.doctors
+    ADD CONSTRAINT doctors_doctor_code_key UNIQUE (doctor_code);
+
+
+--
+-- TOC entry 5004 (class 2606 OID 24756)
+-- Name: doctors doctors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.doctors
+    ADD CONSTRAINT doctors_pkey PRIMARY KEY (doctor_id);
+
+
+--
+-- TOC entry 5006 (class 2606 OID 24758)
+-- Name: doctors doctors_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.doctors
+    ADD CONSTRAINT doctors_user_id_key UNIQUE (user_id);
+
+
+--
+-- TOC entry 5034 (class 2606 OID 25006)
+-- Name: feedback feedback_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feedback
+    ADD CONSTRAINT feedback_pkey PRIMARY KEY (feedback_id);
+
+
+--
+-- TOC entry 5026 (class 2606 OID 24920)
+-- Name: lab_reports lab_reports_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lab_reports
+    ADD CONSTRAINT lab_reports_pkey PRIMARY KEY (report_id);
+
+
+--
+-- TOC entry 5022 (class 2606 OID 24859)
+-- Name: medical_records medical_records_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medical_records
+    ADD CONSTRAINT medical_records_pkey PRIMARY KEY (record_id);
+
+
+--
+-- TOC entry 5028 (class 2606 OID 24948)
+-- Name: medicines medicines_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medicines
+    ADD CONSTRAINT medicines_pkey PRIMARY KEY (medicine_id);
+
+
+--
+-- TOC entry 5036 (class 2606 OID 25029)
+-- Name: notifications notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_id);
+
+
+--
+-- TOC entry 4996 (class 2606 OID 24734)
+-- Name: patients patients_patient_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patients
+    ADD CONSTRAINT patients_patient_code_key UNIQUE (patient_code);
+
+
+--
+-- TOC entry 4998 (class 2606 OID 24730)
+-- Name: patients patients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patients
+    ADD CONSTRAINT patients_pkey PRIMARY KEY (patient_id);
+
+
+--
+-- TOC entry 5000 (class 2606 OID 24732)
+-- Name: patients patients_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patients
+    ADD CONSTRAINT patients_user_id_key UNIQUE (user_id);
+
+
+--
+-- TOC entry 5032 (class 2606 OID 24988)
+-- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments
+    ADD CONSTRAINT payments_pkey PRIMARY KEY (payment_id);
+
+
+--
+-- TOC entry 5024 (class 2606 OID 24889)
+-- Name: prescriptions prescriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.prescriptions
+    ADD CONSTRAINT prescriptions_pkey PRIMARY KEY (prescription_id);
+
+
+--
+-- TOC entry 5008 (class 2606 OID 24781)
+-- Name: receptionists receptionists_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.receptionists
+    ADD CONSTRAINT receptionists_pkey PRIMARY KEY (receptionist_id);
+
+
+--
+-- TOC entry 5010 (class 2606 OID 24785)
+-- Name: receptionists receptionists_receptionist_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.receptionists
+    ADD CONSTRAINT receptionists_receptionist_code_key UNIQUE (receptionist_code);
+
+
+--
+-- TOC entry 5012 (class 2606 OID 24783)
+-- Name: receptionists receptionists_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.receptionists
+    ADD CONSTRAINT receptionists_user_id_key UNIQUE (user_id);
+
+
+--
+-- TOC entry 4986 (class 2606 OID 24695)
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 4988 (class 2606 OID 24693)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 5041 (class 2606 OID 24711)
+-- Name: admins admins_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admins
+    ADD CONSTRAINT admins_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5058 (class 2606 OID 24972)
+-- Name: billing billing_appointment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.billing
+    ADD CONSTRAINT billing_appointment_id_fkey FOREIGN KEY (appointment_id) REFERENCES public.appointments(appointment_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5059 (class 2606 OID 24967)
+-- Name: billing billing_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.billing
+    ADD CONSTRAINT billing_patient_id_fkey FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5064 (class 2606 OID 25053)
+-- Name: bills bills_appointment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.bills
+    ADD CONSTRAINT bills_appointment_id_fkey FOREIGN KEY (appointment_id) REFERENCES public.appointments(appointment_id);
+
+
+--
+-- TOC entry 5065 (class 2606 OID 25063)
+-- Name: bills bills_doctor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.bills
+    ADD CONSTRAINT bills_doctor_id_fkey FOREIGN KEY (doctor_id) REFERENCES public.doctors(doctor_id);
+
+
+--
+-- TOC entry 5066 (class 2606 OID 25058)
+-- Name: bills bills_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.bills
+    ADD CONSTRAINT bills_patient_id_fkey FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id);
+
+
+--
+-- TOC entry 5043 (class 2606 OID 24761)
+-- Name: doctors doctors_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.doctors
+    ADD CONSTRAINT doctors_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5061 (class 2606 OID 25012)
+-- Name: feedback feedback_doctor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feedback
+    ADD CONSTRAINT feedback_doctor_id_fkey FOREIGN KEY (doctor_id) REFERENCES public.doctors(doctor_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5062 (class 2606 OID 25007)
+-- Name: feedback feedback_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feedback
+    ADD CONSTRAINT feedback_patient_id_fkey FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5045 (class 2606 OID 24840)
+-- Name: appointments fk_department; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES public.departments(department_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5046 (class 2606 OID 24830)
+-- Name: appointments fk_doctor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT fk_doctor FOREIGN KEY (doctor_id) REFERENCES public.doctors(doctor_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5055 (class 2606 OID 24931)
+-- Name: lab_reports fk_lab_appointment; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lab_reports
+    ADD CONSTRAINT fk_lab_appointment FOREIGN KEY (appointment_id) REFERENCES public.appointments(appointment_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5056 (class 2606 OID 24926)
+-- Name: lab_reports fk_lab_doctor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lab_reports
+    ADD CONSTRAINT fk_lab_doctor FOREIGN KEY (doctor_id) REFERENCES public.doctors(doctor_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5057 (class 2606 OID 24921)
+-- Name: lab_reports fk_lab_patient; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lab_reports
+    ADD CONSTRAINT fk_lab_patient FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5049 (class 2606 OID 24870)
+-- Name: medical_records fk_medical_appointment; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medical_records
+    ADD CONSTRAINT fk_medical_appointment FOREIGN KEY (appointment_id) REFERENCES public.appointments(appointment_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5050 (class 2606 OID 24865)
+-- Name: medical_records fk_medical_doctor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medical_records
+    ADD CONSTRAINT fk_medical_doctor FOREIGN KEY (doctor_id) REFERENCES public.doctors(doctor_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5051 (class 2606 OID 24860)
+-- Name: medical_records fk_medical_patient; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.medical_records
+    ADD CONSTRAINT fk_medical_patient FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5047 (class 2606 OID 24825)
+-- Name: appointments fk_patient; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT fk_patient FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5052 (class 2606 OID 24900)
+-- Name: prescriptions fk_prescription_appointment; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.prescriptions
+    ADD CONSTRAINT fk_prescription_appointment FOREIGN KEY (appointment_id) REFERENCES public.appointments(appointment_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5053 (class 2606 OID 24895)
+-- Name: prescriptions fk_prescription_doctor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.prescriptions
+    ADD CONSTRAINT fk_prescription_doctor FOREIGN KEY (doctor_id) REFERENCES public.doctors(doctor_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5054 (class 2606 OID 24890)
+-- Name: prescriptions fk_prescription_patient; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.prescriptions
+    ADD CONSTRAINT fk_prescription_patient FOREIGN KEY (patient_id) REFERENCES public.patients(patient_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5048 (class 2606 OID 24835)
+-- Name: appointments fk_receptionist; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT fk_receptionist FOREIGN KEY (receptionist_id) REFERENCES public.receptionists(receptionist_id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5063 (class 2606 OID 25030)
+-- Name: notifications notifications_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5042 (class 2606 OID 24735)
+-- Name: patients patients_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patients
+    ADD CONSTRAINT patients_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5060 (class 2606 OID 24989)
+-- Name: payments payments_bill_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments
+    ADD CONSTRAINT payments_bill_id_fkey FOREIGN KEY (bill_id) REFERENCES public.billing(bill_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5044 (class 2606 OID 24786)
+-- Name: receptionists receptionists_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.receptionists
+    ADD CONSTRAINT receptionists_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5252 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+
+-- Completed on 2026-06-26 14:25:52
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict MmripwY8hJP2Bm4NuleZcqXWxuTNlnpbSVolqTgqSMwsvJisUSKOw5vmBoJyedn
+

@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Reports - HealthSphere</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:25px;
+}
+
+.report{
+background:#f8f9ff;
+border-left:5px solid #22C069;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+}
+
+.report h3{
+color:#5B3FC4;
+margin-bottom:10px;
+}
+
+.btn{
+background:#22C069;
+color:white;
+padding:10px 18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.btn:hover{
+background:#169a51;
+}
+
+.status{
+color:green;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>🧪 Lab Reports</h1>
+
+<div id="reportContainer"></div>
+
+</div>
+<script>
+
+const patient = JSON.parse(localStorage.getItem("patient"));
+console.log(patient);
+console.log(patient.patient_id);
+
+if(!patient){
+    alert("Please login first");
+    window.location.href="patient-login.html";
+}
+
+loadReports();
+
+async function loadReports(){
+
+    try{
+
+        const response = await fetch(
+`http://localhost:5000/api/medical-records/patient/${patient.patient_id}`
+)
+
+        const data = await response.json();
+
+        console.log(data);
+
+        const container =
+            document.getElementById("reportContainer");
+
+        container.innerHTML="";
+
+        if(!data.success || data.records.length===0){
+
+            container.innerHTML=`
+                <h3 style="text-align:center;color:gray;">
+                    No Lab Reports Found
+                </h3>
+            `;
+
+            return;
+        }
+
+        data.records.forEach(report=>{
+
+            container.innerHTML+=`
+
+            <div class="report">
+
+                <h3>${report.report_name}</h3>
+
+                <p>
+                <b>Date:</b>
+                ${report.report_date}
+                </p>
+
+                <p>
+                <b>Status:</b>
+                <span class="status">
+                ${report.status}
+                </span>
+                </p>
+
+                <p>
+                <b>Doctor:</b>
+                Dr. ${report.doctor_name}
+                </p>
+
+                <button class="btn">
+                Download Report
+                </button>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+</script>
+</body>
+</html>
+
