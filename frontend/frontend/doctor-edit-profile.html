@@ -245,7 +245,7 @@ async function saveProfile() {
     };
 
     const response = await fetch(
-        `http://localhost:5000/api/doctors/${doctor.doctor_id}`,
+        `https://healthsphare-clone.onrender.com/api/doctors/${doctor.doctor_id}`,
         {
             method: "PUT",
             headers: {
@@ -271,7 +271,7 @@ async function saveProfile() {
         }
 
         const passwordResponse = await fetch(
-            `http://localhost:5000/api/doctors/change-password/${doctor.doctor_id}`,
+        `https://healthsphare-clone.onrender.com/api/doctors/change-password/${doctor.doctor_id}`,
             {
                 method:"PUT",
                 headers:{

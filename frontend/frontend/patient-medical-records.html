@@ -109,7 +109,7 @@ async function loadMedicalRecords(){
 
         // Get patient profile first
 const profileResponse = await fetch(
-`http://localhost:5000/api/auth/profile/${patient.user_id}`
+`https://healthsphare-clone.onrender.com/api/auth/profile/${patient.user_id}`
 );
 
 const profileData = await profileResponse.json();
@@ -118,7 +118,7 @@ const patient_id = profileData.patient.patient_id;
 
 // Now load medical records
 const response = await fetch(
-`http://localhost:5000/api/medical-records/patient/${patient_id}`
+`https://healthsphare-clone.onrender.com/api/medical-records/patient/${patient_id}`
 );
 
         const data = await response.json();

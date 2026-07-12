@@ -139,7 +139,7 @@ loadLabReports();
 async function loadPatient(){
 
     const response = await fetch(
-        `http://localhost:5000/api/patients/${patientId}`
+        `https://healthsphare-clone.onrender.com/api/patients/${patientId}`
     );
 
     const data = await response.json();
@@ -169,7 +169,7 @@ async function loadPatient(){
 async function loadPrescriptions(){
 
     const response = await fetch(
-        `http://localhost:5000/api/prescriptions/patient/${patientId}`
+        `https://healthsphare-clone.onrender.com/api/prescriptions/patient/${patientId}`
     );
 
     const data = await response.json();
@@ -208,7 +208,7 @@ async function loadMedicalHistory(){
     try{
 
         const response = await fetch(
-            `http://localhost:5000/api/medical-records/patient/${patientId}`
+            `https://healthsphare-clone.onrender.com/api/medical-records/patient/${patientId}`
         );
 
         const data = await response.json();
@@ -272,7 +272,7 @@ async function loadLabReports(){
     try{
 
         const response = await fetch(
-            `http://localhost:5000/api/lab-reports/patient/${patientId}`
+            `https://healthsphare-clone.onrender.com/api/lab-reports/patient/${patientId}`
         );
 
         const data = await response.json();

@@ -269,7 +269,7 @@ async function loadProfile() {
     const patient = JSON.parse(localStorage.getItem("patient"));
 
     const response = await fetch(
-        `http://localhost:5000/api/appointments/patient/${patient.patient_id}`
+        `https://healthsphare-clone.onrender.com/api/appointments/patient/${patient.patient_id}`
 
     );
 
@@ -293,7 +293,7 @@ async function loadAppointments() {
         const patient_id = patient.patient_id;
 
         const response = await fetch(
-            `http://localhost:5000/api/appointments/patient/${patient_id}`
+            `https://healthsphare-clone.onrender.com/api/appointments/patient/${patient_id}`
         );
 
         const data = await response.json();
@@ -362,7 +362,7 @@ JSON.parse(localStorage.getItem("patient"));
 
 const response =
 await fetch(
-`http://localhost:5000/api/notifications/${patient.patient_id}`
+`https://healthsphare-clone.onrender.com/api/notifications/${patient.patient_id}`
 );
 
 const data =

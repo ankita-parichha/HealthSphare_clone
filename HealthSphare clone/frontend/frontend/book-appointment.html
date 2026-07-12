@@ -169,7 +169,7 @@ async function loadDoctors() {
 
     try {
 
-        const response = await fetch("http://localhost:5000/api/doctors");
+        const response = await fetch("https://healthsphare-clone.onrender.com/api/doctors");
 
         const data = await response.json();
 
@@ -294,7 +294,7 @@ async function bookAppointment() {
 
         const response = await fetch(
 
-            "http://localhost:5000/api/appointments/book",
+            "https://healthsphare-clone.onrender.com/api/appointments/book",
 
             {
 

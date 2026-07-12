@@ -452,7 +452,7 @@ window.onload=loadDoctors;
 
 async function loadDoctors(){
 
-    const response=await fetch("http://localhost:5000/api/doctors");
+    const response=await fetch("https://healthsphare-clone.onrender.com/api/doctors");
 
     const data=await response.json();
 
@@ -600,13 +600,13 @@ status:status.value
 
 };
 
-let url="http://localhost:5000/api/doctors/register";
+let url="https://healthsphare-clone.onrender.com/api/doctors/register";
 
 let method="POST";
 
 if(isEdit){
 
-url="http://localhost:5000/api/doctors/"+doctorId.value;
+url="https://healthsphare-clone.onrender.com/api/doctors/"+doctorId.value;
 
 method="PUT";
 
@@ -648,7 +648,7 @@ return;
 
 const response=await fetch(
 
-"http://localhost:5000/api/doctors/"+id,
+"https://healthsphare-clone.onrender.com/api/doctors/"+id,
 
 {
 

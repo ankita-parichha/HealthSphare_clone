@@ -452,7 +452,7 @@ async function loadReceptionists(){
 try{
 
 const response = await fetch(
-"http://localhost:5000/api/receptionists"
+"https://healthsphare-clone.onrender.com/api/receptionists"
 );
 
 const data = await response.json();
@@ -619,7 +619,7 @@ let method;
 let body;
 if(receptionistId==""){
 
-url="http://localhost:5000/api/receptionists/register";
+url="https://healthsphare-clone.onrender.com/api/receptionists/register";
 
 method="POST";
 
@@ -643,7 +643,7 @@ password
 }
 else{
 
-url="http://localhost:5000/api/receptionists/"+receptionistId;
+url="https://healthsphare-clone.onrender.com/api/receptionists/"+receptionistId;
 
 method="PUT";
 
@@ -797,7 +797,7 @@ try{
 
 const response = await fetch(
 
-"http://localhost:5000/api/receptionists/" + id,
+"https://healthsphare-clone.onrender.com/api/receptionists/" + id,
 
 {
 

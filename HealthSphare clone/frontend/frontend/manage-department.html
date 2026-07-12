@@ -219,7 +219,7 @@ async function loadDepartments(){
 try{
 
 const response = await fetch(
-"http://localhost:5000/api/departments"
+"https://healthsphare-clone.onrender.com/api/departments"
 );
 
 const data = await response.json();
@@ -319,13 +319,13 @@ let method;
 
 if(departmentId==""){
 
-url="http://localhost:5000/api/departments/register";
+url="https://healthsphare-clone.onrender.com/api/departments/register";
 
 method="POST";
 
 }else{
 
-url="http://localhost:5000/api/departments/"+departmentId;
+url="https://healthsphare-clone.onrender.com/api/departments/"+departmentId;
 
 method="PUT";
 
@@ -445,8 +445,7 @@ if(!confirmDelete) return;
 try{
 
 const response = await fetch(
-
-"http://localhost:5000/api/departments/"+id,
+"https://healthsphare-clone.onrender.com/api/departments/"+id,
 
 {
 

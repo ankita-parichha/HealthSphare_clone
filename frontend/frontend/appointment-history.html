@@ -148,7 +148,7 @@ async function loadAppointments(){
     try{
 
         const response = await fetch(
-            `http://localhost:5000/api/appointments/patient/${patient.patient_id}`
+            `https://healthsphare-clone.onrender.com/api/appointments/patient/${patient.patient_id}`
         );
 
         const data = await response.json();

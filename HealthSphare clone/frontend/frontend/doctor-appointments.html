@@ -122,7 +122,7 @@ async function loadAppointments() {
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/appointments/doctor/${doctor.doctor_id}`
+            `https://healthsphare-clone.onrender.com/api/appointments/doctor/${doctor.doctor_id}`
         );
 
         const data = await response.json();
@@ -196,7 +196,7 @@ async function updateStatus(id, action) {
 
         const response = await fetch(
 
-            `http://localhost:5000/api/appointments/${action}/${id}`,
+            `https://healthsphare-clone.onrender.com/api/appointments/${action}/${id}`,
 
             {
                 method: "PUT"

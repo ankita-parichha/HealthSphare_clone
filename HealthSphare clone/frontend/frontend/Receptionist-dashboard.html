@@ -193,7 +193,7 @@ async function loadDashboard(){
 try{
 
 const response =
-await fetch("http://localhost:5000/api/dashboard/stats");
+await fetch("https://healthsphare-clone.onrender.com/api/dashboard/stats");
 
 const data =
 await response.json();
@@ -222,7 +222,7 @@ console.log(error);
 async function loadTodayAppointments(){
 
     const response = await fetch(
-        "http://localhost:5000/api/receptionists/today-appointments"
+        "https://healthsphare-clone.onrender.com/api/receptionists/today-appointments"
     );
 
     const data = await response.json();

@@ -334,7 +334,7 @@ try{
 
 const response=await fetch(
 
-"http://localhost:5000/api/patients"
+"https://healthsphare-clone.onrender.com/api/patients"
 
 );
 
@@ -549,7 +549,7 @@ let body;
 
 if(patientId==""){
 
-url="http://localhost:5000/api/patients/register";
+url="https://healthsphare-clone.onrender.com/api/patients/register";
 
 method="POST";
 
@@ -569,7 +569,7 @@ pincode
 
 }else{
 
-url="http://localhost:5000/api/patients/"+patientId;
+url="https://healthsphare-clone.onrender.com/api/patients/"+patientId;
 
 method="PUT";
 
@@ -680,7 +680,7 @@ try{
 
 const response = await fetch(
 
-"http://localhost:5000/api/patients/"+id,
+"https://healthsphare-clone.onrender.com/api/patients/"+id,
 
 {
 

@@ -214,7 +214,7 @@ async function loadProfile() {
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/auth/profile/${patient.user_id}`
+            `https://healthsphare-clone.onrender.com/api/auth/profile/${patient.user_id}`
         );
 
         const data = await response.json();
@@ -266,7 +266,7 @@ async function saveProfile(){
     try{
 
         const response = await fetch(
-            `http://localhost:5000/api/auth/profile/${patient.user_id}`,
+            `https://healthsphare-clone.onrender.com/api/auth/profile/${patient.user_id}`,
             {
                 method: "PUT",
                 headers: {

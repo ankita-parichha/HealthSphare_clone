@@ -122,7 +122,7 @@ async function loadReports(){
     try{
 
         const response = await fetch(
-            `http://localhost:5000/api/lab-reports/patient/${patientId}`
+            `https://healthsphare-clone.onrender.com/api/lab-reports/patient/${patientId}`
         );
 
         const data = await response.json();

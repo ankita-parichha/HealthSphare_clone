@@ -340,7 +340,7 @@ async function loadAppointments() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/appointments/all"
+            "https://healthsphare-clone.onrender.com/api/appointments/all"
         );
 
         const data = await response.json();
@@ -438,7 +438,7 @@ async function loadPatients(){
 try{
 
 const response = await fetch(
-"http://localhost:5000/api/patients"
+"https://healthsphare-clone.onrender.com/api/patients"
 );
 
 const data = await response.json();
@@ -469,7 +469,7 @@ async function loadDoctors(){
 try{
 
 const response = await fetch(
-"http://localhost:5000/api/doctors"
+"https://healthsphare-clone.onrender.com/api/doctors"
 );
 
 const data = await response.json();
@@ -549,7 +549,7 @@ let body;
 
 if(appointmentId==""){
 
-url="http://localhost:5000/api/appointments/register";
+url="https://healthsphare-clone.onrender.com/api/appointments/register";
 
 method="POST";
 
@@ -565,7 +565,7 @@ status
 
 }else{
 
-url="http://localhost:5000/api/appointments/"+appointmentId;
+url="https://healthsphare-clone.onrender.com/api/appointments/"+appointmentId;
 
 method="PUT";
 
@@ -633,7 +633,7 @@ async function editAppointment(id){
     try{
 
         const response = await fetch(
-            "http://localhost:5000/api/appointments/all"
+            "https://healthsphare-clone.onrender.com/api/appointments/all"
         );
 
         const data = await response.json();
@@ -694,7 +694,7 @@ async function deleteAppointment(id){
 if(!confirm("Delete Appointment?")) return;
 
 const response = await fetch(
-"http://localhost:5000/api/appointments/"+id,
+"https://healthsphare-clone.onrender.com/api/appointments/"+id,
 {
 method:"DELETE"
 }
