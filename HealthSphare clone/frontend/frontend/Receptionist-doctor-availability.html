@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Availability</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:25px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#5B3FC4;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #ddd;
+}
+
+.available{
+color:green;
+font-weight:bold;
+}
+
+.unavailable{
+color:red;
+font-weight:bold;
+}
+
+.btn{
+background:#22C069;
+color:white;
+padding:8px 15px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.btn:hover{
+background:#169a51;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>👨‍⚕️ Doctor Availability</h1>
+
+<table>
+
+<tr>
+<th>Doctor Name</th>
+<th>Specialization</th>
+<th>Fee</th>
+<th>Available Time</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>Dr. Ananya Sharma</td>
+<td>Cardiologist</td>
+<td>₹800</td>
+<td>10:00 AM - 2:00 PM</td>
+<td class="available">Available</td>
+<td>
+<button class="btn" onclick="assignDoctor()">
+Assign
+</button>
+</td>
+</tr>
+
+<tr>
+<td>Dr. Raj Mehta</td>
+<td>Neurologist</td>
+<td>₹1000</td>
+<td>11:00 AM - 4:00 PM</td>
+<td class="available">Available</td>
+<td>
+<button class="btn" onclick="assignDoctor()">
+Assign
+</button>
+</td>
+</tr>
+
+<tr>
+<td>Dr. Priya Das</td>
+<td>Dermatologist</td>
+<td>₹600</td>
+<td>09:00 AM - 1:00 PM</td>
+<td class="unavailable">Unavailable</td>
+<td>-</td>
+</tr>
+
+</table>
+
+</div>
+
+<script>
+
+function assignDoctor(){
+alert("Doctor Assigned Successfully!");
+}
+
+</script>
+
+</body>
+</html>
+

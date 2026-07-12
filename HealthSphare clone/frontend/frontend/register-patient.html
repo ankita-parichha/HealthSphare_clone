@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register Patient</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:25px;
+}
+
+.form-group{
+margin-bottom:15px;
+}
+
+label{
+display:block;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.btn{
+width:100%;
+padding:14px;
+background:#22C069;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+.btn:hover{
+background:#169a51;
+}
+
+.patient-id{
+background:#eef4ff;
+padding:15px;
+border-radius:10px;
+margin-bottom:20px;
+font-weight:bold;
+color:#5B3FC4;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📝 Register New Patient</h1>
+
+<div class="patient-id">
+Patient ID: <strong>Auto Generated</strong>
+</div>
+
+<div class="form-group">
+<label>Full Name</label>
+<input type="text" id="full_name" placeholder="Enter Patient Name">
+</div>
+
+<div class="form-group">
+<label>Age</label>
+<input type="number" id="age" placeholder="Enter Age">
+</div>
+
+<div class="form-group">
+<label>Gender</label>
+<select id="gender">
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Blood Group</label>
+<select id="blood_group">
+<option>A+</option>
+<option>B+</option>
+<option>O+</option>
+<option>AB+</option>
+<option>A-</option>
+<option>B-</option>
+<option>O-</option>
+<option>AB-</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Phone Number</label>
+<input type="text" id="phone" placeholder="Enter Mobile Number">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="email" placeholder="Enter Email">
+</div>
+
+
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="password" placeholder="Create Password">
+</div>
+
+
+<div class="form-group">
+<label>Address</label>
+<textarea id="address" rows="3"></textarea>
+</div>
+
+<div class="form-group">
+<label>Emergency Contact Name</label>
+<input type="text" id="emergency_name">
+</div>
+
+<div class="form-group">
+<label>Emergency Contact Number</label>
+<input type="text" id="emergency_phone">
+</div>
+
+<button class="btn" onclick="registerPatient()">
+Register Patient
+</button>
+
+</div>
+
+<script>
+async function registerPatient() {
+
+    const patient = {
+        full_name: document.getElementById("full_name").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        blood_group: document.getElementById("blood_group").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        emergency_contact_name: document.getElementById("emergency_name").value,
+emergency_contact_phone: document.getElementById("emergency_phone").value,
+        password: document.getElementById("password").value
+    };
+
+    try {
+
+        const response = await fetch("http://localhost:5000/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(patient)
+        });
+
+        console.log("Status:", response.status);
+
+const result = await response.json();
+
+console.log("Backend Response:", result);
+
+alert(result.message);
+       if (result.success) {
+    alert("Patient Registered Successfully");
+    window.location.href = "Patient-login.html";
+} 
+
+    } catch (error) {
+        alert("Server Error");
+        console.error(error);
+    }
+}
+</script>
+
+</body>
+</html>
+

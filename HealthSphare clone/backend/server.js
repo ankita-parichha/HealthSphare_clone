@@ -1,6 +1,7 @@
 const labReportRoutes = require("./routes/labReportRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-const notificationRoutes = require("./routes/notificationRoutes");
+const notificationRoutes =
+require("./routes/notificationRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const adminRoutes = require("./routes/adminRoutes");

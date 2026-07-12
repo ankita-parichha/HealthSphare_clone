@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Bills - HealthSphere</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+background:#fff;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#2563eb;
+margin-bottom:25px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#2563eb;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+.pay-btn{
+background:#22c55e;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.paid{
+background:#2563eb;
+color:white;
+padding:8px 15px;
+border-radius:6px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>💳 My Bills</h1>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Bill No</th>
+<th>Doctor</th>
+<th>Date</th>
+<th>Amount</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="billTable">
+
+<tr>
+
+<td colspan="6">
+
+No Bills Available
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const patient =
+JSON.parse(localStorage.getItem("patient"));
+
+if(!patient){
+
+alert("Please login first");
+
+window.location.href="patient-login.html";
+
+}
+
+loadBills();
+
+async function loadBills(){
+
+try{
+
+const response =
+await fetch(
+
+`http://localhost:5000/api/bills/patient/${patient.patient_id}`
+
+);
+
+const data =
+await response.json();
+
+const table =
+document.getElementById("billTable");
+
+table.innerHTML="";
+
+if(
+!data.success ||
+data.bills.length===0
+){
+
+table.innerHTML=
+"<tr><td colspan='6'>No Bills Available</td></tr>";
+
+return;
+
+}
+
+data.bills.forEach(bill=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>${bill.bill_number}</td>
+
+<td>
+Dr. ${bill.first_name} ${bill.last_name}
+</td>
+
+<td>${bill.appointment_date}</td>
+
+<td>₹${bill.amount}</td>
+
+<td>${bill.payment_status}</td>
+
+<td>
+
+${
+bill.payment_status==="Pending"
+
+?
+
+`<button
+class="pay-btn"
+onclick="payBill(${bill.bill_id})">
+
+Pay Now
+
+</button>`
+
+:
+
+`<span class="paid">
+
+Paid
+
+</span>`
+
+}
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+async function payBill(id){
+
+try{
+
+const response = await fetch(
+
+`http://localhost:5000/api/bills/pay/${id}`,
+
+{
+method:"PUT"
+}
+
+);
+
+const result = await response.json();
+
+alert(result.message);
+
+loadBills();
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

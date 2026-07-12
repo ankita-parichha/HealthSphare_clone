@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+}
+
+.sidebar{
+position:fixed;
+width:250px;
+height:100%;
+background:#5B3FC4;
+padding-top:20px;
+}
+
+.sidebar h2{
+text-align:center;
+color:white;
+margin-bottom:30px;
+}
+
+.sidebar a{
+display:block;
+padding:15px 25px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:rgba(255,255,255,.15);
+}
+
+.main{
+margin-left:250px;
+padding:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:30px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.card h3{
+color:#5B3FC4;
+}
+
+.card p{
+font-size:28px;
+font-weight:bold;
+margin-top:10px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:15px;
+overflow:hidden;
+}
+
+th{
+background:#5B3FC4;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #ddd;
+}
+
+.btn{
+background:#22C069;
+color:white;
+padding:8px 15px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+.admin-profile{
+
+text-align:center;
+
+padding:20px;
+
+color:white;
+
+border-bottom:1px solid rgba(255,255,255,.2);
+
+margin-bottom:20px;
+
+}
+
+.admin-profile img{
+
+width:80px;
+
+height:80px;
+
+border-radius:50%;
+
+border:3px solid white;
+
+margin-bottom:10px;
+
+}
+
+.admin-profile h3{
+
+margin:8px 0;
+
+font-size:20px;
+
+}
+
+.admin-profile p{
+
+font-size:13px;
+
+opacity:.9;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+
+<div class="admin-profile">
+
+    <img
+    src="https://i.pravatar.cc/120?img=12"
+    alt="Admin">
+
+    <h3 id="adminName">Administrator</h3>
+
+    <p id="adminEmail">admin@healthsphere.com</p>
+
+</div>
+<a href="#">🏠 Dashboard</a>
+<a href="manage-doctor.html">👨‍⚕️ Manage Doctors</a>
+<a href="manage-receptionists.html">👩‍💼 Receptionists</a>
+<a href="hospital-analytics.html">📊 Analytics</a>
+
+<a href="Admin-profile.html">👤 Profile</a>
+<a href="manage-patients.html">
+👥 Manage Patients
+</a>
+<a href="manage-department.html">
+🏥 Departments
+</a>
+<a href="manage-appointments.html">
+📅 Manage Appointments
+</a>
+
+<a href="reports-dashboard.html">
+📈 Reports Dashboard
+</a>
+
+<a href="hospital-feedback.html">
+⭐ Feedback
+</a>
+<a href="system-settings.html">⚙ Settings</a>
+
+<a href="#" onclick="logout()">
+🚪 Logout
+</a>
+</div>
+
+<div class="main">
+
+<h1>Hospital Admin Dashboard</h1>
+
+<br>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Patients</h3>
+<p id="totalPatients">0</p>
+</div>
+
+<div class="card">
+<h3>Total Doctors</h3>
+<p id="totalDoctors">0</p>
+</div>
+
+<div class="card">
+<h3>Appointments</h3>
+<p id="totalAppointments">0</p>
+</div>
+
+<div class="card">
+<h3>Total Revenue</h3>
+<p id="totalRevenue">0</p>
+</div>
+
+</div>
+
+<h2>Recent Activities</h2>
+
+<br>
+
+<table>
+
+<tr>
+<th>User</th>
+<th>Activity</th>
+<th>Date</th>
+</tr>
+
+<tr>
+<td>Dr. Ananya Sharma</td>
+<td>Added Prescription</td>
+<td>16 June 2026</td>
+</tr>
+
+<tr>
+<td>Receptionist</td>
+<td>Registered New Patient</td>
+<td>16 June 2026</td>
+</tr>
+
+<tr>
+<td>Admin</td>
+<td>Updated Doctor Schedule</td>
+<td>15 June 2026</td>
+</tr>
+
+</table>
+
+</div>
+<script>
+const admin = JSON.parse(localStorage.getItem("admin"));
+
+if (!admin) {
+    alert("Please Login First");
+    window.location.href = "Admin-login.html";
+} else {
+    document.getElementById("adminName").textContent = admin.full_name;
+    document.getElementById("adminEmail").textContent = admin.email;
+}
+    
+async function loadDashboard() {
+
+    try {
+
+        const response = await fetch("http://localhost:5000/api/admin/dashboard");
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            document.getElementById("totalPatients").innerText = data.totalPatients;
+            document.getElementById("totalDoctors").innerText = data.totalDoctors;
+            document.getElementById("totalAppointments").innerText = data.totalAppointments;
+            document.getElementById("totalRevenue").innerText = "₹" + data.totalRevenue;
+
+        }
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+loadDashboard();
+function logout() {
+
+    localStorage.removeItem("admin");
+
+    window.location.href = "Admin-login.html";
+
+}
+</script>
+</body>
+</html>
+

@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital Analytics</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+text-align:center;
+}
+
+.card h3{
+color:#5B3FC4;
+margin-bottom:10px;
+}
+
+.card p{
+font-size:28px;
+font-weight:bold;
+}
+
+.section{
+background:white;
+padding:25px;
+border-radius:15px;
+margin-top:25px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>📈 Hospital Analytics</h1>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Patients</h3>
+<p id="totalPatients">0</p>
+</div>
+
+<div class="card">
+<h3>Total Doctors</h3>
+<p id="totalDoctors">0</p>
+</div>
+
+<div class="card">
+<h3>Appointments</h3>
+<p id="totalAppointments">0</p>
+</div>
+
+<div class="card">
+<h3>Revenue</h3>
+<p id="totalRevenue">₹0</p>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>🏥 Department Performance</h2>
+
+<p>Total Departments :
+<b id="totalDepartments">0</b></p>
+
+</div>
+<div class="section">
+
+<h2>👨‍⚕️ Doctor Performance</h2>
+
+<p>Total Doctors :
+<b id="doctorCount">0</b></p>
+
+</div>
+
+<div class="section">
+
+<h2>😊 Hospital Summary</h2>
+
+<p>Total Revenue :
+<b id="summaryRevenue">₹0</b></p>
+
+</div>
+
+</div>
+<script>
+
+async function loadAnalytics(){
+
+    try{
+
+        const response = await fetch("http://localhost:5000/api/admin/dashboard");
+
+        const data = await response.json();
+
+        if(data.success){
+
+            document.getElementById("totalPatients").innerText =
+            data.totalPatients;
+
+            document.getElementById("totalDoctors").innerText =
+            data.totalDoctors;
+
+            document.getElementById("doctorCount").innerText =
+            data.totalDoctors;
+
+            document.getElementById("totalAppointments").innerText =
+            data.totalAppointments;
+
+            document.getElementById("totalRevenue").innerText =
+            "₹"+data.totalRevenue;
+
+            document.getElementById("summaryRevenue").innerText =
+            "₹"+data.totalRevenue;
+
+        }
+
+        // Optional: Load departments count
+        try{
+            const dept = await fetch("http://localhost:5000/api/departments");
+            const deptData = await dept.json();
+
+            if(deptData.success){
+                document.getElementById("totalDepartments").innerText =
+                deptData.departments.length;
+            }
+        }catch(e){
+            document.getElementById("totalDepartments").innerText = "-";
+        }
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+loadAnalytics();
+
+</script>
+</body>
+</html>
+

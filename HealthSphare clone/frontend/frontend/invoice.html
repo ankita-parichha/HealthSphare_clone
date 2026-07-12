@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice - HealthSphere</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.invoice-container{
+    max-width:800px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+    color:#5B3FC4;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.details{
+    margin-top:20px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #ddd;
+}
+
+.total{
+    font-size:22px;
+    font-weight:bold;
+    color:#22C069;
+}
+
+.btn{
+    margin-top:20px;
+    width:100%;
+    padding:15px;
+    background:#5B3FC4;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.btn:hover{
+    background:#4527a0;
+}
+</style>
+</head>
+<body>
+
+<div class="invoice-container">
+
+<h1>HealthSphere Invoice</h1>
+
+<div class="header">
+    <div>
+        <h3>Invoice No:</h3>
+        <p>INV-2026-001</p>
+    </div>
+
+    <div>
+        <h3>Date:</h3>
+        <p>15 June 2026</p>
+    </div>
+</div>
+
+<div class="details">
+    <p><strong>Patient Name:</strong> Rahul Kumar</p>
+    <p><strong>Patient ID:</strong> P001</p>
+    <p><strong>Doctor:</strong> Dr. Ananya Sharma</p>
+</div>
+
+<hr>
+
+<div class="row">
+    <span>Consultation Fee</span>
+    <span>₹800</span>
+</div>
+
+<div class="row">
+    <span>Medicine Charges</span>
+    <span>₹500</span>
+</div>
+
+<div class="row">
+    <span>Lab Charges</span>
+    <span>₹700</span>
+</div>
+
+<div class="row total">
+    <span>Total Paid</span>
+    <span>₹2000</span>
+</div>
+
+<button class="btn" onclick="window.print()">
+🖨 Download / Print Invoice
+</button>
+
+</div>
+
+</body>
+</html>

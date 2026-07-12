@@ -1,0 +1,713 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Patients - HealthSphere</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:25px;
+}
+
+.search-box{
+margin-bottom:20px;
+}
+
+.search-box input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#5B3FC4;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+.btn{
+padding:8px 14px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+color:white;
+margin:2px;
+}
+
+.view{
+background:#2563eb;
+}
+
+.edit{
+background:#f59e0b;
+}
+
+.delete{
+background:#ef4444;
+}
+
+.empty{
+padding:20px;
+text-align:center;
+color:gray;
+}
+.modal{
+
+display:none;
+
+position:fixed;
+
+left:0;
+
+top:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(0,0,0,.5);
+
+}
+
+.modal-content{
+
+background:white;
+
+width:500px;
+
+margin:50px auto;
+
+padding:25px;
+
+border-radius:15px;
+
+position:relative;
+
+}
+
+.close{
+
+position:absolute;
+
+right:20px;
+
+top:10px;
+
+font-size:28px;
+
+cursor:pointer;
+
+color:red;
+
+}
+
+.modal input,
+.modal select{
+
+width:100%;
+
+padding:12px;
+
+margin-top:8px;
+
+border:1px solid #ccc;
+
+border-radius:8px;
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>👥 Manage Patients</h1>
+
+<div class="search-box">
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="patientTable">
+
+</tbody>
+
+</table>
+<input
+type="text"
+id="searchInput"
+placeholder="Search Patient..."
+onkeyup="searchPatient()">
+
+<button
+class="btn view"
+style="float:right"
+onclick="openModal()">
+
++ Add Patient
+
+</button>
+
+</div>
+<!-- Patient Modal -->
+
+<div id="patientModal" class="modal">
+
+<div class="modal-content">
+
+<span class="close"
+onclick="closeModal()">
+
+&times;
+
+</span>
+
+<h2 id="modalTitle">
+
+Add Patient
+
+</h2>
+
+<input
+type="hidden"
+id="patientId">
+
+<input
+type="text"
+id="full_name"
+placeholder="Full Name">
+
+<br><br>
+
+<input
+type="email"
+id="email"
+placeholder="Email">
+
+<br><br>
+
+<input
+type="text"
+id="phone"
+placeholder="Phone">
+
+<br><br>
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<br><br>
+
+<select id="gender">
+
+<option value="">Gender</option>
+
+<option>Male</option>
+
+<option>Female</option>
+
+<option>Other</option>
+
+</select>
+
+<br><br>
+
+<input
+type="text"
+id="address"
+placeholder="Address">
+
+<br><br>
+
+<input
+type="text"
+id="city"
+placeholder="City">
+
+<br><br>
+
+<input
+type="text"
+id="state"
+placeholder="State">
+
+<br><br>
+
+<input
+type="text"
+id="pincode"
+placeholder="Pincode">
+
+<br><br>
+
+<select id="status">
+
+<option>Active</option>
+
+<option>Inactive</option>
+
+</select>
+
+<br><br>
+
+<button
+id="saveBtn"
+class="btn view"
+onclick="savePatient()">
+
+Save Patient
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+let patientList = [];
+
+
+window.onload=function(){
+
+loadPatients();
+
+};
+
+async function loadPatients(){
+
+try{
+
+const response=await fetch(
+
+"http://localhost:5000/api/patients"
+
+);
+
+const data=await response.json();
+
+patientList=data.patients;
+
+const table=document.getElementById("patientTable");
+
+table.innerHTML="";
+
+data.patients.forEach(patient=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>${patient.patient_code}</td>
+
+<td>${patient.full_name}</td>
+
+<td>${patient.email}</td>
+
+<td>${patient.phone}</td>
+
+<td>
+
+<button
+class="btn edit"
+onclick="editPatient(${patient.patient_id})">
+
+Edit
+
+</button>
+
+<button
+class="btn delete"
+onclick="deletePatient(${patient.patient_id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+function searchPatient(){
+
+let filter =
+document.getElementById("searchInput")
+.value.toUpperCase();
+
+let rows =
+document.querySelectorAll("#patientTable tr");
+
+rows.forEach(function(row){
+
+let patient =
+row.cells[1];
+
+if(!patient) return;
+
+let txt =
+patient.textContent || patient.innerText;
+
+if(txt.toUpperCase().indexOf(filter) > -1){
+
+row.style.display = "";
+
+}else{
+
+row.style.display = "none";
+
+}
+
+});
+
+}
+
+
+// ==========================
+// Open Modal
+// ==========================
+
+function openModal(){
+
+clearForm();
+
+document.getElementById("modalTitle").innerHTML="Add Patient";
+
+document.getElementById("saveBtn").innerHTML="Save Patient";
+
+document.getElementById("password").style.display="block";
+
+document.getElementById("patientModal").style.display="block";
+
+}
+
+// ==========================
+// Close Modal
+// ==========================
+
+function closeModal(){
+
+document.getElementById("patientModal").style.display="none";
+
+}
+// ==========================
+// Clear Form
+// ==========================
+
+function clearForm(){
+
+document.getElementById("patientId").value="";
+
+document.getElementById("full_name").value="";
+
+document.getElementById("email").value="";
+
+document.getElementById("phone").value="";
+
+document.getElementById("password").value="";
+
+document.getElementById("gender").value="";
+
+document.getElementById("address").value="";
+
+document.getElementById("city").value="";
+
+document.getElementById("state").value="";
+
+document.getElementById("pincode").value="";
+
+document.getElementById("status").value="Active";
+
+}
+// ==========================
+// Save Patient
+// ==========================
+
+async function savePatient(){
+
+const patientId =
+document.getElementById("patientId").value;
+
+const full_name =
+document.getElementById("full_name").value;
+
+const email =
+document.getElementById("email").value;
+
+const phone =
+document.getElementById("phone").value;
+
+const password =
+document.getElementById("password").value;
+
+const gender =
+document.getElementById("gender").value;
+
+const address =
+document.getElementById("address").value;
+
+const city =
+document.getElementById("city").value;
+
+const state =
+document.getElementById("state").value;
+
+const pincode =
+document.getElementById("pincode").value;
+
+const status =
+document.getElementById("status").value;
+
+if(
+
+!full_name ||
+!email ||
+!phone ||
+!gender ||
+!address ||
+!city ||
+!state ||
+!pincode
+
+){
+
+alert("Please Fill All Fields");
+
+return;
+
+}
+
+let url;
+let method;
+let body;
+
+if(patientId==""){
+
+url="http://localhost:5000/api/patients/register";
+
+method="POST";
+
+body={
+
+full_name,
+email,
+phone,
+password,
+gender,
+address,
+city,
+state,
+pincode
+
+};
+
+}else{
+
+url="http://localhost:5000/api/patients/"+patientId;
+
+method="PUT";
+
+body={
+
+full_name,
+email,
+phone,
+gender,
+address,
+city,
+state,
+pincode,
+status
+
+};
+
+}
+
+try{
+
+const response = await fetch(
+
+url,
+
+{
+
+method,
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(body)
+
+}
+
+);
+
+const data = await response.json();
+
+alert(data.message);
+
+closeModal();
+
+clearForm();
+
+loadPatients();
+
+}catch(error){
+
+console.log(error);
+
+alert("Server Error");
+
+}
+
+}
+// ==========================
+// Edit Patient
+// ==========================
+
+function editPatient(id){
+
+const patient = patientList.find(
+p => p.patient_id == id
+);
+
+if(!patient){
+
+alert("Patient Not Found");
+
+return;
+
+}
+
+document.getElementById("patientId").value = patient.patient_id;
+document.getElementById("full_name").value = patient.full_name;
+document.getElementById("email").value = patient.email;
+document.getElementById("phone").value = patient.phone;
+document.getElementById("gender").value = patient.gender;
+document.getElementById("address").value = patient.address;
+document.getElementById("city").value = patient.city;
+document.getElementById("state").value = patient.state;
+document.getElementById("pincode").value = patient.pincode;
+document.getElementById("status").value = patient.status;
+
+document.getElementById("password").style.display="none";
+
+document.getElementById("modalTitle").innerHTML="Edit Patient";
+
+document.getElementById("saveBtn").innerHTML="Update Patient";
+
+document.getElementById("patientModal").style.display="block";
+
+}
+// ==========================
+// Delete Patient
+// ==========================
+
+async function deletePatient(id){
+
+if(!confirm("Delete Patient?")) return;
+
+try{
+
+const response = await fetch(
+
+"http://localhost:5000/api/patients/"+id,
+
+{
+
+method:"DELETE"
+
+}
+
+);
+
+const data = await response.json();
+
+alert(data.message);
+
+loadPatients();
+
+}
+catch(error){
+
+console.log(error);
+
+alert("Delete Failed");
+
+}
+
+}
+</script>
+
+</body>
+</html>
+

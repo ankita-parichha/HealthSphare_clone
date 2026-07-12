@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Medical Records - HealthSphere</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+background:#fff;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+color:#2563eb;
+margin-bottom:25px;
+}
+
+.form-box{
+background:#f8faff;
+padding:20px;
+border-radius:15px;
+margin-bottom:25px;
+}
+
+input,
+textarea,
+select{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border:1px solid #ddd;
+border-radius:8px;
+font-size:15px;
+}
+
+textarea{
+resize:none;
+}
+
+.btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+}
+
+.btn:hover{
+background:#1d4ed8;
+}
+
+.record-card{
+background:#f8faff;
+padding:20px;
+margin-top:15px;
+border-left:5px solid #2563eb;
+border-radius:10px;
+}
+
+.record-card h3{
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.record-card p{
+margin:6px 0;
+}
+
+.delete-btn{
+margin-top:10px;
+background:#ef4444;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.delete-btn:hover{
+background:#dc2626;
+}
+
+.no-record{
+text-align:center;
+padding:20px;
+color:gray;
+font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🩺 Doctor Medical Records</h1>
+
+<div class="form-box">
+<input
+type="hidden"
+id="patient_id">
+
+<input
+type="text"
+id="diagnosis"
+placeholder="Diagnosis">
+
+<textarea
+id="treatment"
+rows="4"
+placeholder="Treatment"></textarea>
+
+<textarea
+id="notes"
+rows="4"
+placeholder="Doctor Notes"></textarea>
+
+
+
+<button class="btn" onclick="saveRecord()">
+Save Medical Record
+</button>
+
+</div>
+
+<h2>📋 Patient Records</h2>
+
+<div id="recordList"></div>
+
+</div>
+
+<script>
+
+window.onload = function(){
+loadRecords();
+};
+
+const doctor =
+JSON.parse(localStorage.getItem("doctor"));
+
+async function saveRecord(){
+
+const patient_id =
+document.getElementById("patient_id").value;
+
+const diagnosis =
+document.getElementById("diagnosis").value;
+
+const treatment =
+document.getElementById("treatment").value;
+
+const notes =
+document.getElementById("notes").value;
+
+if(!diagnosis || !treatment){
+
+alert("Fill all fields");
+
+return;
+
+}
+
+const response =
+await fetch(
+"http://localhost:5000/api/medical-records/add",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+patient_id,
+doctor_id:doctor.doctor_id,
+diagnosis,
+treatment,
+notes
+
+})
+
+}
+
+);
+
+const result =
+await response.json();
+
+alert(result.message);
+
+}
+function loadRecords(){
+
+let records =
+JSON.parse(localStorage.getItem("medicalRecords")) || [];
+
+let list =
+document.getElementById("recordList");
+
+list.innerHTML="";
+
+if(records.length===0){
+
+list.innerHTML=
+'<div class="no-record">No Medical Records Found</div>';
+
+return;
+}
+
+records.forEach((record,index)=>{
+
+list.innerHTML += `
+
+<div class="record-card">
+
+<h3>${record.patientName}</h3>
+
+<p><b>Age:</b> ${record.age}</p>
+
+<p><b>Gender:</b> ${record.gender}</p>
+
+<p><b>Blood Group:</b> ${record.bloodGroup}</p>
+
+<p><b>Disease:</b> ${record.disease}</p>
+
+<p><b>Medical History:</b> ${record.history}</p>
+
+<p><b>Treatment:</b> ${record.treatment}</p>
+
+<p><b>Date:</b> ${record.date}</p>
+
+<button class="delete-btn"
+onclick="deleteRecord(${index})">
+Delete Record
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+function deleteRecord(index){
+
+let records =
+JSON.parse(localStorage.getItem("medicalRecords")) || [];
+
+records.splice(index,1);
+
+localStorage.setItem(
+"medicalRecords",
+JSON.stringify(records)
+);
+
+loadRecords();
+
+}
+
+</script>
+
+</body>
+</html>

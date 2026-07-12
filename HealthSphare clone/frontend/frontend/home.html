@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HealthSphere – Support That Cares</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#5B3FC4;--purple-light:#7B5FE8;--purple-dark:#3D2A9C;
+  --green:#22C069;--green-light:#3DDC84;--green-dark:#17A355;
+  --white:#ffffff;--gray-50:#f8fafc;--gray-100:#f1f5f9;
+  --gray-400:#94a3b8;--gray-600:#475569;--gray-800:#1e293b;
+  --dark:#080B1A;--dark2:#0F1228;
+  --grad:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  --grad-rev:linear-gradient(135deg,var(--green) 0%,var(--purple) 100%);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:#fff;overflow-x:hidden}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:0 5%;display:flex;align-items:center;justify-content:space-between;
+  height:70px;background:rgba(255,255,255,0.93);
+  backdrop-filter:blur(20px);border-bottom:1px solid rgba(91,63,196,0.08);
+  transition:box-shadow 0.3s
+}
+nav.scrolled{box-shadow:0 4px 30px rgba(91,63,196,0.13)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo span{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.25rem;background:var(--grad), -moz-backface-visibility-text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--gray-600);font-size:0.9rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--purple)}
+.nav-cta{display:flex;gap:12px}
+.btn-outline{padding:9px 20px;border:2px solid var(--purple);border-radius:50px;color:var(--purple);font-weight:600;font-size:0.875rem;background:transparent;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center}
+.btn-outline:hover{background:var(--purple);color:white}
+.btn-primary{padding:9px 22px;border-radius:50px;background:var(--grad);color:white;font-weight:600;font-size:0.875rem;border:none;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,63,196,0.35)}
+
+/* ═══ HERO ═══ */
+.hero{
+  min-height:100vh;padding:120px 5% 80px;
+  display:flex;align-items:center;justify-content:space-between;gap:40px;
+  position:relative;overflow:hidden
+}
+.hero-bg{position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 60% 60% at 70% 50%,rgba(91,63,196,0.06) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 50% at 20% 70%,rgba(34,192,105,0.05) 0%,transparent 60%)}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.18;animation:blobFloat 8s ease-in-out infinite}
+.blob-1{width:500px;height:500px;background:var(--purple);top:-100px;right:-100px}
+.blob-2{width:400px;height:400px;background:var(--green);bottom:-80px;left:10%;animation-delay:3s}
+.blob-3{width:300px;height:300px;background:var(--purple-light);top:40%;left:30%;animation-delay:5s;opacity:0.1}
+@keyframes blobFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+.grid-dots{position:absolute;inset:0;z-index:0;opacity:0.035;
+  background-image:radial-gradient(circle,#5B3FC4 1.5px,transparent 1.5px);background-size:36px 36px}
+
+.hero-content{position:relative;z-index:1;max-width:580px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;
+  background:rgba(91,63,196,0.08);border:1px solid rgba(91,63,196,0.15);
+  font-size:0.8rem;font-weight:600;color:var(--purple);margin-bottom:24px;animation:fadeSlideUp 0.6s ease both}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.6}}
+.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2.4rem,5vw,3.8rem);font-weight:800;line-height:1.1;color:var(--gray-800);margin-bottom:20px;animation:fadeSlideUp 0.7s 0.1s ease both}
+.hero h1 .grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.1rem;line-height:1.7;color:var(--gray-600);margin-bottom:36px;animation:fadeSlideUp 0.7s 0.2s ease both}
+.hero-buttons{display:flex;gap:16px;flex-wrap:wrap;animation:fadeSlideUp 0.7s 0.3s ease both}
+.btn-appt{padding:15px 30px;border-radius:50px;background:var(--grad);color:white;font-weight:700;font-size:1rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform 0.2s,box-shadow 0.2s;text-decoration:none}
+.btn-appt:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(91,63,196,0.4)}
+.btn-emergency{padding:15px 28px;border-radius:50px;background:white;color:#e53e3e;font-weight:700;font-size:1rem;border:2px solid #fed7d7;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;text-decoration:none;position:relative;overflow:hidden}
+.btn-emergency:hover{background:#fff5f5;border-color:#e53e3e;transform:translateY(-3px);box-shadow:0 8px 24px rgba(229,62,62,0.2)}
+.emergency-ring{width:10px;height:10px;border-radius:50%;background:#e53e3e;position:relative;flex-shrink:0}
+.emergency-ring::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid #e53e3e;animation:ringPulse 1.5s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0}}
+
+.hero-stats{display:flex;gap:32px;margin-top:48px;animation:fadeSlideUp 0.7s 0.4s ease both}
+.stat-item{text-align:left}
+.stat-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.8rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:0.8rem;color:var(--gray-400);font-weight:500}
+
+.hero-visual{position:relative;z-index:1;flex:0 0 auto;width:min(480px,45vw)}
+.hero-card-main{background:white;border-radius:24px;padding:28px;box-shadow:0 24px 60px rgba(91,63,196,0.15),0 4px 16px rgba(0,0,0,0.06);animation:fadeSlideLeft 0.8s 0.2s ease both}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.doc-avatar{width:48px;height:48px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-size:1.3rem}
+.doc-info h4{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.95rem}
+.doc-info span{font-size:0.78rem;color:var(--gray-400)}
+.online-badge{margin-left:auto;font-size:0.72rem;color:var(--green-dark);background:rgba(34,192,105,0.1);padding:3px 10px;border-radius:20px;font-weight:600}
+.vitals-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.vital{background:var(--gray-50);border-radius:14px;padding:14px 12px;text-align:center}
+.vital-icon{font-size:1.3rem;margin-bottom:4px}
+.vital-val{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1rem;color:var(--gray-800)}
+.vital-lbl{font-size:0.7rem;color:var(--gray-400)}
+.appt-btn{width:100%;padding:13px;border-radius:14px;background:var(--grad);color:white;font-weight:700;font-size:0.9rem;border:none;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
+.appt-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,63,196,0.35)}
+.float-card{position:absolute;background:white;border-radius:16px;padding:12px 16px;box-shadow:0 12px 32px rgba(0,0,0,0.1);display:flex;align-items:center;gap:10px;font-size:0.8rem;font-weight:600;white-space:nowrap;animation:floatAnim 4s ease-in-out infinite}
+.float-card-1{top:-20px;left:-30px;animation-delay:0s}
+.float-card-2{bottom:30px;right:-30px;animation-delay:2s}
+.fc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.fc-icon.green{background:rgba(34,192,105,0.1)}.fc-icon.purple{background:rgba(91,63,196,0.1)}
+.fc-text strong{display:block;font-size:0.82rem;color:var(--gray-800)}
+.fc-text span{font-size:0.7rem;color:var(--gray-400);font-weight:400}
+@keyframes floatAnim{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeSlideLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* ═══ TRUST BAR ═══ */
+.trust-bar{background:var(--gray-50);border-top:1px solid rgba(91,63,196,0.06);border-bottom:1px solid rgba(91,63,196,0.06);padding:18px 5%;overflow:hidden;position:relative}
+.trust-bar::before,.trust-bar::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2}
+.trust-bar::before{left:0;background:linear-gradient(90deg,var(--gray-50),transparent)}
+.trust-bar::after{right:0;background:linear-gradient(-90deg,var(--gray-50),transparent)}
+.trust-track{display:flex;gap:60px;align-items:center;width:max-content;animation:scrollTrack 22s linear infinite}
+@keyframes scrollTrack{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.trust-item{display:flex;align-items:center;gap:10px;white-space:nowrap;opacity:0.5;transition:opacity 0.3s;font-weight:700;font-size:0.85rem;font-family:'Plus Jakarta Sans',sans-serif}
+.trust-item:hover{opacity:0.9}
+.trust-dot{width:8px;height:8px;border-radius:50%;background:var(--grad);background:linear-gradient(135deg,var(--purple),var(--green));flex-shrink:0}
+
+/* ═══ FEATURES ═══ */
+.section{padding:100px 5%}
+.section-label{text-align:center;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green-dark);margin-bottom:12px}
+.section-title{text-align:center;font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;color:var(--gray-800);margin-bottom:16px;line-height:1.2}
+.section-sub{text-align:center;color:var(--gray-600);font-size:1rem;line-height:1.7;max-width:560px;margin:0 auto 60px}
+
+/* bento grid features */
+.bento-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:auto;gap:20px}
+.bento{border-radius:24px;padding:32px;position:relative;overflow:hidden;transition:transform 0.35s,box-shadow 0.35s}
+.bento:hover{transform:translateY(-6px)}
+.bento-a{grid-column:span 3;background:linear-gradient(135deg,#f0ebff,#e8f8ef);border:1px solid rgba(91,63,196,0.1)}
+.bento-b{grid-column:span 3;background:linear-gradient(135deg,#e8f8ef,#f0ebff);border:1px solid rgba(34,192,105,0.1)}
+.bento-c{grid-column:span 2;background:var(--dark);color:white}
+.bento-d{grid-column:span 2;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:white}
+.bento-e{grid-column:span 2;background:linear-gradient(135deg,var(--green-dark),var(--green));color:white}
+.bento-f{grid-column:span 4;background:var(--gray-50);border:1px solid rgba(91,63,196,0.08)}
+.bento-g{grid-column:span 2;background:linear-gradient(135deg,#1a0533,#2d1060);color:white}
+.bento:hover{box-shadow:0 20px 48px rgba(91,63,196,0.15)}
+.bento-icon{font-size:2.2rem;margin-bottom:18px;display:block}
+.bento h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:10px}
+.bento p{font-size:0.875rem;line-height:1.65;opacity:0.8}
+.bento-tag{display:inline-block;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.15);font-size:0.7rem;font-weight:600;margin-bottom:12px;letter-spacing:0.06em;text-transform:uppercase}
+.bento-tag.dark{background:rgba(91,63,196,0.1);color:var(--purple)}
+/* mini mockup inside bento */
+.mini-chart{margin-top:20px;display:flex;align-items:flex-end;gap:6px;height:60px}
+.bar{border-radius:6px 6px 0 0;flex:1;background:linear-gradient(to top,var(--purple),var(--green-light));opacity:0.7;transition:opacity 0.3s}
+.bento:hover .bar{opacity:1}
+.mini-pills{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:5px 12px;border-radius:20px;background:rgba(255,255,255,0.12);font-size:0.72rem;font-weight:600;border:1px solid rgba(255,255,255,0.2)}
+.pill.light{background:rgba(91,63,196,0.08);color:var(--purple);border-color:rgba(91,63,196,0.15)}
+
+/* ═══ HOW IT WORKS — timeline ═══ */
+.hiw-section{background:var(--dark);padding:100px 5%;overflow:hidden;position:relative}
+.hiw-section .section-label{color:var(--green-light)}
+.hiw-section .section-title{color:white}
+.hiw-section .section-sub{color:rgba(255,255,255,0.6)}
+/* bg glow */
+.hiw-glow{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hiw-glow-1{width:600px;height:600px;background:rgba(91,63,196,0.18);top:-200px;right:-100px}
+.hiw-glow-2{width:500px;height:500px;background:rgba(34,192,105,0.1);bottom:-200px;left:-100px}
+
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:20px}
+.timeline::before{content:'';position:absolute;top:44px;left:12.5%;right:12.5%;height:2px;background:linear-gradient(90deg,var(--purple),var(--green));z-index:0}
+.tl-step{text-align:center;padding:0 20px;position:relative;z-index:1}
+.tl-num{width:88px;height:88px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.6rem;color:white;background:var(--dark2);border:2px solid rgba(255,255,255,0.1);position:relative;transition:transform 0.3s}
+.tl-num::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--grad);z-index:-1;opacity:0;transition:opacity 0.3s}
+.tl-step:hover .tl-num{transform:scale(1.1)}
+.tl-step:hover .tl-num::after{opacity:1}
+.tl-icon{font-size:2rem}
+.tl-step h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1rem;color:white;margin-bottom:8px}
+.tl-step p{font-size:0.82rem;color:rgba(255,255,255,0.5);line-height:1.65}
+
+/* ═══ MODULES SHOWCASE ═══ */
+.modules-section{padding:100px 5%;background:#fff;position:relative;overflow:hidden}
+.modules-section::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(91,63,196,0.05),transparent 70%)}
+.modules-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:48px;flex-wrap:wrap}
+.mod-tab{padding:10px 22px;border-radius:50px;border:1.5px solid rgba(91,63,196,0.15);background:transparent;font-size:0.875rem;font-weight:600;color:var(--gray-600);cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+.mod-tab.active,.mod-tab:hover{background:var(--grad);color:white;border-color:transparent}
+.modules-display{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+.mod-details h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;margin-bottom:14px;line-height:1.2}
+.mod-details p{color:var(--gray-600);line-height:1.75;margin-bottom:24px;font-size:0.95rem}
+.mod-feat-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.mod-feat-list li{display:flex;align-items:center;gap:10px;font-size:0.875rem;font-weight:500}
+.mod-check{width:24px;height:24px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-size:0.7rem;flex-shrink:0}
+.mod-visual{background:var(--gray-50);border-radius:24px;padding:28px;border:1px solid rgba(91,63,196,0.08);min-height:300px;display:flex;flex-direction:column;gap:14px;transition:all 0.4s}
+.mod-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:white;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.05);transition:transform 0.2s}
+.mod-row:hover{transform:translateX(4px)}
+.mod-row-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.mod-row-icon.p{background:rgba(91,63,196,0.1)}
+.mod-row-icon.g{background:rgba(34,192,105,0.1)}
+.mod-row-icon.o{background:rgba(245,158,11,0.1)}
+.mod-row-text strong{display:block;font-size:0.85rem;font-weight:700}
+.mod-row-text span{font-size:0.75rem;color:var(--gray-400)}
+.mod-row-badge{margin-left:auto;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700}
+.badge-green{background:rgba(34,192,105,0.1);color:var(--green-dark)}
+.badge-blue{background:rgba(91,63,196,0.1);color:var(--purple)}
+.badge-amber{background:rgba(245,158,11,0.1);color:#92400e}
+
+/* ═══ AI SECTION ═══ */
+.ai-section{padding:100px 5%;background:linear-gradient(135deg,#080B1A,#0F1228,#14102A);color:white;position:relative;overflow:hidden}
+.ai-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.ai-orb-1{width:500px;height:500px;background:rgba(91,63,196,0.3);top:-150px;right:-100px}
+.ai-orb-2{width:400px;height:400px;background:rgba(34,192,105,0.15);bottom:-150px;left:-80px}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.ai-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;border-radius:50px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);font-size:0.8rem;font-weight:600;margin-bottom:20px}
+.ai-badge span{width:6px;height:6px;border-radius:50%;background:var(--green-light);animation:pulse 1.8s ease-in-out infinite}
+.ai-content h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;margin-bottom:16px;line-height:1.2}
+.ai-content p{opacity:0.75;line-height:1.75;margin-bottom:28px;font-size:0.95rem}
+.ai-feat-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.ai-feat-list li{display:flex;align-items:center;gap:12px;font-size:0.9rem}
+.ai-check{width:26px;height:26px;border-radius:8px;background:rgba(34,192,105,0.15);border:1px solid rgba(34,192,105,0.3);display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--green-light);flex-shrink:0}
+/* chat */
+.chat-window{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:24px;backdrop-filter:blur(12px)}
+.chat-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.chat-av{width:42px;height:42px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.chat-header h4{font-size:0.9rem;font-weight:700}
+.chat-header span{font-size:0.72rem;opacity:0.55}
+.online-dot{width:8px;height:8px;border-radius:50%;background:var(--green-light);margin-left:auto;box-shadow:0 0 8px var(--green)}
+.msgs{display:flex;flex-direction:column;gap:12px}
+.msg{padding:11px 15px;border-radius:16px;font-size:0.83rem;line-height:1.55;max-width:88%;animation:msgPop 0.4s ease both}
+.msg.bot{background:rgba(255,255,255,0.09);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.usr{background:var(--grad);align-self:flex-end;border-bottom-right-radius:4px}
+.msg.d1{animation-delay:0.8s;opacity:0}.msg.d2{animation-delay:1.6s;opacity:0}.msg.d3{animation-delay:2.4s;opacity:0}.msg.d4{animation-delay:3.2s;opacity:0}
+.typing{display:flex;gap:5px;align-items:center;padding:12px 16px;background:rgba(255,255,255,0.09);border-radius:16px;width:fit-content;animation:msgPop 0.4s 3.8s ease both;opacity:0}
+.typing span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.5);animation:typeBounce 1s ease infinite}
+.typing span:nth-child(2){animation-delay:0.2s}.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes typeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes msgPop{from{opacity:0;transform:scale(0.88) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+/* ═══ STATS BAND ═══ */
+.stats-band{padding:80px 5%;background:var(--grad);position:relative;overflow:hidden}
+.stats-band::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%23fff' fill-opacity='0.06'/%3E%3C/svg%3E")}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative;z-index:1}
+.sband-stat{text-align:center;padding:32px 20px;border-radius:20px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:transform 0.3s,background 0.3s}
+.sband-stat:hover{transform:translateY(-6px);background:rgba(255,255,255,0.18)}
+.sband-icon{font-size:2rem;margin-bottom:12px;display:block}
+.sband-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:2.6rem;font-weight:900;color:white;display:block;line-height:1}
+.sband-label{font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:6px;font-weight:500}
+
+/* ═══ TESTIMONIALS ═══ */
+.test-section{padding:100px 5%;background:var(--dark);position:relative;overflow:hidden}
+.test-section .section-label{color:var(--green-light)}
+.test-section .section-title{color:white}
+.test-section .section-sub{color:rgba(255,255,255,0.55)}
+.test-glow{position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(120px);pointer-events:none}
+.test-glow-1{background:rgba(91,63,196,0.15);top:-200px;left:-100px}
+.test-glow-2{background:rgba(34,192,105,0.1);bottom:-200px;right:-100px}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative;z-index:1}
+.test-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:32px;transition:all 0.35s;position:relative;overflow:hidden}
+.test-card::before{content:'';position:absolute;inset:0;background:var(--grad);opacity:0;transition:opacity 0.35s;border-radius:24px}
+.test-card:hover::before{opacity:0.05}
+.test-card:hover{transform:translateY(-8px);border-color:rgba(255,255,255,0.15);box-shadow:0 24px 48px rgba(0,0,0,0.3)}
+.quote-mark{font-size:4rem;line-height:1;font-family:Georgia,serif;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;display:block}
+.test-card p{font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.75;margin-bottom:24px;position:relative;z-index:1;font-style:italic}
+.test-author{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.test-av{width:46px;height:46px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.9rem}
+.test-info strong{font-size:0.875rem;color:white;display:block}
+.test-info span{font-size:0.75rem;color:rgba(255,255,255,0.45)}
+.stars{color:#f59e0b;font-size:0.85rem;margin-bottom:14px;letter-spacing:2px}
+
+/* ═══ CTA ═══ */
+.cta-wrap{padding:80px 5%}
+.cta-card{background:var(--dark);border-radius:32px;padding:80px 60px;text-align:center;position:relative;overflow:hidden}
+.cta-card::before{content:'';position:absolute;inset:0;background:var(--grad);opacity:0.08}
+.cta-orb1{position:absolute;width:400px;height:400px;border-radius:50%;filter:blur(100px);background:rgba(91,63,196,0.3);top:-150px;left:-100px;pointer-events:none}
+.cta-orb2{position:absolute;width:350px;height:350px;border-radius:50%;filter:blur(100px);background:rgba(34,192,105,0.2);bottom:-150px;right:-100px;pointer-events:none}
+.cta-card h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:white;margin-bottom:16px;position:relative;z-index:1}
+.cta-card h2 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta-card p{color:rgba(255,255,255,0.65);font-size:1.05rem;margin-bottom:36px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-cta-p{padding:16px 36px;border-radius:50px;background:var(--grad);color:white;font-weight:700;font-size:1rem;border:none;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-cta-p:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(91,63,196,0.5)}
+.btn-cta-o{padding:16px 34px;border-radius:50px;background:rgba(255,255,255,0.08);color:white;font-weight:700;font-size:1rem;border:1.5px solid rgba(255,255,255,0.2);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-cta-o:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.5)}
+
+/* ═══ FOOTER ═══ */
+footer{background:#04050E;color:rgba(255,255,255,0.6);padding:70px 5% 30px}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:48px;margin-bottom:56px}
+.footer-brand .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.footer-brand .logo-row span{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.2rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.footer-brand p{font-size:0.85rem;line-height:1.75;opacity:0.6;max-width:260px;margin-bottom:20px}
+.social-row{display:flex;gap:10px}
+.soc-btn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;cursor:pointer;border:1px solid rgba(255,255,255,0.08)}
+.soc-btn:hover{background:var(--grad);border-color:transparent;transform:translateY(-2px)}
+.footer-col h4{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:white;font-size:0.9rem;margin-bottom:18px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.footer-col ul li a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.footer-col ul li a:hover{color:var(--green-light)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:28px;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;opacity:0.4}
+
+/* ═══ SCROLL REVEAL ═══ */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-32px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(32px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:var(--grad);border-radius:3px}
+
+@media(max-width:1024px){
+  .bento-grid{grid-template-columns:repeat(4,1fr)}
+  .bento-a,.bento-b{grid-column:span 2}
+  .bento-c,.bento-d,.bento-e{grid-column:span 2}
+  .bento-f{grid-column:span 2}.bento-g{grid-column:span 2}
+  .modules-display{grid-template-columns:1fr}.ai-grid{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .test-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .hero{flex-direction:column;padding-top:100px;text-align:center}
+  .hero-visual{width:100%;max-width:400px;margin:0 auto}
+  .hero-stats{justify-content:center}
+  .hero-buttons{justify-content:center}
+  .float-card{display:none}
+  .bento-grid{grid-template-columns:1fr 1fr}
+  .bento-a,.bento-b,.bento-c,.bento-d,.bento-e,.bento-f,.bento-g{grid-column:span 2}
+  .timeline{grid-template-columns:1fr 1fr}
+  .timeline::before{display:none}
+  .test-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .cta-card{padding:50px 30px}
+  .nav-links,.nav-cta .btn-outline{display:none}
+}
+@media(max-width:480px){
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr}
+}
+.dropdown{
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content{
+    display:none;
+    position:absolute;
+    background:#fff;
+    min-width:220px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    border-radius:10px;
+    z-index:1000;
+}
+
+.dropdown-content a{
+    color:black;
+    padding:12px 16px;
+    text-decoration:none;
+    display:block;
+}
+
+.dropdown-content a:hover{
+    background:#f1f1f1;
+}
+
+.dropdown:hover .dropdown-content{
+    display:block;
+}
+.dashboard-link{
+background:linear-gradient(
+135deg,
+#22C069,
+#2563EB
+);
+color:white !important;
+padding:10px 18px;
+border-radius:25px;
+font-weight:bold;
+transition:.3s;
+}
+
+.dashboard-link:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 15px rgba(37,99,235,.3);
+}
+.dashboard-btn{
+text-decoration:none;
+padding:12px 20px;
+border-radius:30px;
+background:linear-gradient(
+135deg,
+#22C069,
+#2563EB
+);
+color:white;
+font-weight:600;
+margin-right:10px;
+transition:0.3s;
+}
+
+.dashboard-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 15px rgba(37,99,235,.3);
+}
+.dashboard-btn{
+text-decoration:none;
+padding:12px 22px;
+border-radius:30px;
+background:linear-gradient(
+135deg,
+#22C069,
+#2563EB
+);
+color:white;
+font-weight:600;
+margin-right:12px;
+transition:0.3s;
+}
+
+.dashboard-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 15px rgba(37,99,235,.25);
+}
+.healthbot-btn{
+
+display:inline-block;
+margin-top:35px;
+
+padding:18px 40px;
+
+background:linear-gradient(90deg,#6C63FF,#22C069);
+
+color:#fff;
+text-decoration:none;
+
+font-size:20px;
+font-weight:700;
+
+border-radius:999px;
+
+transition:.4s;
+
+box-shadow:0 15px 40px rgba(0,0,0,.25);
+
+}
+
+.healthbot-btn:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 20px 45px rgba(34,192,105,.45);
+
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <img src="./WhatsApp Image 2026-06-14 at 1.45.29 PM.jpeg" alt="" style="height: 89px; padding: 1px;">
+    <!-- <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+      <defs><linearGradient id="nlg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#5B3FC4"/><stop offset="100%" stop-color="#22C069"/></linearGradient></defs>
+      <path d="M50 12C28 12,12 28,12 48C12 68,28 82,50 92C72 82,88 68,88 48C88 28,72 12,50 12Z" fill="url(#nlg)" opacity="0.15" stroke="url(#nlg)" stroke-width="2.5"/>
+      <path d="M44 36L44 64M30 50L58 50" stroke="url(#nlg)" stroke-width="7" stroke-linecap="round"/>
+    </svg> -->
+    <span> HealthSphere</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#ai">AI Assistant</a></li>
+    <li><a href="#about">About</a></li>
+    <li>
+<a href="home-dashboard.html" class="dashboard-link">
+🏠 Dashboard
+</a>
+</li>
+  </ul>
+  <div class="nav-cta">
+    
+
+
+    <div class="dropdown">
+        <button class="btn-outline">Sign In ▼</button>
+
+        <div class="dropdown-content">
+            <a href="Doctor-login.html">👨‍⚕️ Doctor Login</a>
+            <a href="Patient-login.html">🧑 Patient Login</a>
+            <a href="Admin-login.html">🛡️ Admin Login</a>
+            <a href="Receptionist-login.html">📋 Receptionist Login</a>
+        </div>
+    </div>
+    
+    <a href="Patient-login.html" class="btn-primary">Get Started</a>
+
+</div>
+ 
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-dots"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge"><div class="badge-dot"></div>Trusted by 500+ hospitals across India</div>
+    <h1>Healthcare<br/>Management,<br/><span class="grad-text">Reimagined.</span></h1>
+    <p>HealthSphere brings patients, doctors, pharmacy, and administration onto one intelligent platform — so healthcare teams spend less time on paperwork and more time on care.</p>
+    <div class="hero-buttons">
+      <a href="Patient-login.html" class="btn-appt">📅 Book Appointment</a>
+      <a href="#" class="btn-emergency"><span class="emergency-ring"></span>🚨 Emergency Call</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num" data-target="50000">0</div><div class="stat-label">Patients Managed</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="1200">0</div><div class="stat-label">Doctors Onboard</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="99">0</div><div class="stat-label">% Uptime</div></div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    
+    <div class="hero-card-main">
+      <div class="card-header">
+        <div class="doc-avatar">👨‍⚕️</div>
+        <div class="doc-info"><h4>Dr. Ananya Sharma</h4><span>Cardiologist · AIIMS</span></div>
+        <div class="online-badge">● Online</div>
+      </div>
+      <div class="vitals-row">
+        <div class="vital"><div class="vital-icon">❤️</div><div class="vital-val">72 bpm</div><div class="vital-lbl">Heart Rate</div></div>
+        <div class="vital"><div class="vital-icon">🩸</div><div class="vital-val">120/80</div><div class="vital-lbl">BP</div></div>
+        <div class="vital"><div class="vital-icon">🌡️</div><div class="vital-val">98.6°F</div><div class="vital-lbl">Temp</div></div>
+      </div>
+      <svg viewBox="0 0 340 60" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin-bottom:16px;display:block">
+        <defs><linearGradient id="ecg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5B3FC4"/><stop offset="100%" stop-color="#22C069"/></linearGradient></defs>
+        <polyline fill="none" stroke="url(#ecg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="0,30 30,30 40,30 50,8 58,52 66,30 76,30 106,30 116,30 126,8 134,52 142,30 152,30 182,30 192,30 202,8 210,52 218,30 228,30 258,30 268,30 278,8 286,52 294,30 304,30 340,30">
+          <animate attributeName="stroke-dasharray" from="0 1000" to="1000 0" dur="2.5s" fill="freeze" repeatCount="indefinite"/>
+        </polyline>
+      </svg>
+      <button class="appt-btn"
+onclick="window.location.href='Patient-login.html'">
+📅 Book Appointment Now
+</button>
+    </div>
+   
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-track">
+    <div class="trust-item"><div class="trust-dot"></div>Apollo Hospitals</div>
+    <div class="trust-item"><div class="trust-dot"></div>AIIMS New Delhi</div>
+    <div class="trust-item"><div class="trust-dot"></div>Fortis Healthcare</div>
+    <div class="trust-item"><div class="trust-dot"></div>Manipal Hospitals</div>
+    <div class="trust-item"><div class="trust-dot"></div>Max Healthcare</div>
+    <div class="trust-item"><div class="trust-dot"></div>Medanta</div>
+    <div class="trust-item"><div class="trust-dot"></div>Columbia Asia</div>
+    <div class="trust-item"><div class="trust-dot"></div>Narayana Health</div>
+    <!-- duplicate for infinite scroll -->
+    <div class="trust-item"><div class="trust-dot"></div>Apollo Hospitals</div>
+    <div class="trust-item"><div class="trust-dot"></div>AIIMS New Delhi</div>
+    <div class="trust-item"><div class="trust-dot"></div>Fortis Healthcare</div>
+    <div class="trust-item"><div class="trust-dot"></div>Manipal Hospitals</div>
+    <div class="trust-item"><div class="trust-dot"></div>Max Healthcare</div>
+    <div class="trust-item"><div class="trust-dot"></div>Medanta</div>
+    <div class="trust-item"><div class="trust-dot"></div>Columbia Asia</div>
+    <div class="trust-item"><div class="trust-dot"></div>Narayana Health</div>
+  </div>
+</div>
+
+<!-- FEATURES BENTO -->
+<section class="section" id="features">
+  <div class="section-label">Why HealthSphere</div>
+  <h2 class="section-title">Built for every corner<br/>of your hospital</h2>
+  <p class="section-sub">Every feature is designed with real healthcare workflows in mind — not generic SaaS templates.</p>
+  <div class="bento-grid">
+    <div class="bento bento-a reveal">
+      <div class="bento-tag dark">📋 Patient Records</div>
+      <h3>Complete Medical History at a Glance</h3>
+      <p>Every visit, diagnosis, lab report, and prescription in one unified patient profile. Access in under 2 seconds.</p>
+      <div class="mini-pills">
+        <div class="pill light">Lab Reports</div>
+        <div class="pill light">Diagnoses</div>
+        <div class="pill light">Prescriptions</div>
+        <div class="pill light">Imaging</div>
+      </div>
+    </div>
+    <div class="bento bento-b reveal">
+      <div class="bento-tag dark">📅 Scheduling</div>
+      <h3>Smart Appointment Engine</h3>
+      <p>Real-time doctor availability, automated SMS & email reminders, and intelligent queue management built in.</p>
+      <div class="mini-chart">
+        <div class="bar" style="height:30%"></div><div class="bar" style="height:55%"></div>
+        <div class="bar" style="height:40%"></div><div class="bar" style="height:80%"></div>
+        <div class="bar" style="height:65%"></div><div class="bar" style="height:90%"></div>
+        <div class="bar" style="height:70%"></div><div class="bar" style="height:100%"></div>
+      </div>
+    </div>
+    <div class="bento bento-c reveal">
+      <span class="bento-icon">💊</span>
+      <h3>Pharmacy Module</h3>
+      <p>Live inventory, prescription verification, and stock alerts in one place.</p>
+    </div>
+    <div class="bento bento-d reveal">
+      <span class="bento-icon">💳</span>
+      <h3>Instant Billing</h3>
+      <p>Auto-generate bills, accept UPI & card payments, download PDFs.</p>
+    </div>
+    <div class="bento bento-e reveal">
+      <span class="bento-icon">📊</span>
+      <h3>Live Analytics</h3>
+      <p>Revenue, occupancy & department KPIs updated in real-time.</p>
+    </div>
+    <div class="bento bento-f reveal">
+      <div class="bento-tag dark">🔒 Security</div>
+      <h3>HIPAA-Aligned, Role-Based Access</h3>
+      <p>Every user sees only what they need. Full audit logs, end-to-end encryption, and automatic session expiry keep your data protected around the clock.</p>
+      <div class="mini-pills">
+        <div class="pill light">Role-Based Access</div>
+        <div class="pill light">Audit Logs</div>
+        <div class="pill light">E2E Encryption</div>
+        <div class="pill light">HIPAA Aligned</div>
+      </div>
+    </div>
+    <div class="bento bento-g reveal">
+      <span class="bento-icon">🤖</span>
+      <h3>AI Health Assistant</h3>
+      <p>Symptom checker, appointment suggestions, 24/7 patient support.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw-section" id="how">
+  <div class="hiw-glow hiw-glow-1"></div>
+  <div class="hiw-glow hiw-glow-2"></div>
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Live in four steps</h2>
+  <p class="section-sub">From sign-up to a fully operational hospital — HealthSphere gets you there fast.</p>
+  <div class="timeline">
+    <div class="tl-step reveal">
+      <div class="tl-num"><span class="tl-icon">🏥</span></div>
+      <h3>Register Your Hospital</h3>
+      <p>Create your org, add departments, and configure settings — done in under 10 minutes.</p>
+    </div>
+    <div class="tl-step reveal">
+      <div class="tl-num"><span class="tl-icon">👥</span></div>
+      <h3>Onboard Staff & Doctors</h3>
+      <p>Invite your team. Each role gets the right dashboard automatically — no manual setup.</p>
+    </div>
+    <div class="tl-step reveal">
+      <div class="tl-num"><span class="tl-icon">🧑‍⚕️</span></div>
+      <h3>Register Patients</h3>
+      <p>Patients sign up or walk in. Profiles are created instantly with full history tracking.</p>
+    </div>
+    <div class="tl-step reveal">
+      <div class="tl-num"><span class="tl-icon">✨</span></div>
+      <h3>Everything Flows</h3>
+      <p>Appointments book, EMRs update, bills generate — healthcare, fully automated.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules-section" id="modules">
+  <div class="section-label">Platform Modules</div>
+  <h2 class="section-title">Six modules.<br/>One platform.</h2>
+  <p class="section-sub">Each module is production-ready on day one. Use them independently or as an integrated suite.</p>
+  <div class="modules-tabs">
+    <button class="mod-tab active" onclick="switchModule(this,'patient')">🧑‍⚕️ Patient</button>
+    <button class="mod-tab" onclick="switchModule(this,'doctor')">👨‍⚕️ Doctor</button>
+    <button class="mod-tab" onclick="switchModule(this,'appointments')">📅 Appointments</button>
+    <button class="mod-tab" onclick="switchModule(this,'pharmacy')">💊 Pharmacy</button>
+    <button class="mod-tab" onclick="switchModule(this,'billing')">💳 Billing</button>
+    <button class="mod-tab" onclick="switchModule(this,'emr')">🗃️ EMR</button>
+  </div>
+  <div class="modules-display" id="modDisplay">
+    <div class="mod-details reveal-left">
+      <h2 id="modTitle">Patient Management</h2>
+      <p id="modDesc">Complete patient lifecycle management — from first registration to discharge summary. Every patient gets a rich digital profile with medical history, emergency contacts, and a full audit trail.</p>
+      <ul class="mod-feat-list" id="modFeats">
+        <li><span class="mod-check">✓</span>Patient Registration & Profile Management</li>
+        <li><span class="mod-check">✓</span>Full Medical History Records</li>
+        <li><span class="mod-check">✓</span>Appointment & Prescription History</li>
+        <li><span class="mod-check">✓</span>Emergency Contact Information</li>
+      </ul>
+      <a href="#" class="btn-appt" style="width:fit-content">Explore Module →</a>
+    </div>
+    <div class="mod-visual reveal-right" id="modVisual">
+      <div class="mod-row">
+        <div class="mod-row-icon p">👤</div>
+        <div class="mod-row-text"><strong>Priya Sharma</strong><span>Patient ID #PX-4821 · Registered Today</span></div>
+        <span class="mod-row-badge badge-green">Active</span>
+      </div>
+      <div class="mod-row">
+        <div class="mod-row-icon g">📋</div>
+        <div class="mod-row-text"><strong>Medical History Updated</strong><span>Diabetes Type 2 · Hypertension</span></div>
+        <span class="mod-row-badge badge-blue">EMR</span>
+      </div>
+      <div class="mod-row">
+        <div class="mod-row-icon o">📞</div>
+        <div class="mod-row-text"><strong>Emergency Contact</strong><span>Rahul Sharma · +91 98765 43210</span></div>
+        <span class="mod-row-badge badge-amber">Contact</span>
+      </div>
+      <div class="mod-row">
+        <div class="mod-row-icon p">💊</div>
+        <div class="mod-row-text"><strong>3 Active Prescriptions</strong><span>Last updated 2 hours ago</span></div>
+        <span class="mod-row-badge badge-green">Active</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI -->
+<section class="ai-section" id="ai">
+  <div class="ai-orb ai-orb-1"></div>
+  <div class="ai-orb ai-orb-2"></div>
+  <div class="ai-grid">
+    <div class="ai-content reveal-left">
+      <div class="ai-badge"><span></span>AI-Powered</div>
+      <h2>Your 24/7 intelligent<br/>health companion</h2>
+      <p>HealthBot guides patients from first symptom to the right specialist — cutting triage time by 60% and freeing your staff for what matters most.</p>
+      <ul class="ai-feat-list">
+        <li><span class="ai-check">✓</span>Symptom checker with specialist recommendations</li>
+        <li><span class="ai-check">✓</span>Smart appointment suggestions based on real availability</li>
+        <li><span class="ai-check">✓</span>Medication reminders and follow-up alerts</li>
+        <li><span class="ai-check">✓</span>Multilingual support — Hindi, Odia, Tamil, Telugu & more</li>
+      </ul>
+      <a href="patient-login.html" class="healthbot-btn">
+    Try HealthBot →
+</a>
+    </div>
+    <div class="reveal-right">
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="chat-av">🤖</div>
+          <div><h4>HealthBot</h4><span>AI Health Assistant</span></div>
+          <div class="online-dot"></div>
+        </div>
+        <div class="msgs">
+          <div class="msg bot">Hello! 👋 I'm HealthBot. How are you feeling today?</div>
+          <div class="msg usr d1">Headache and mild fever since yesterday.</div>
+          <div class="msg bot d2">I understand. This could be viral or tension-related. I recommend a General Physician. Shall I check today's availability?</div>
+          <div class="msg usr d3">Yes, earliest slot please!</div>
+          <div class="msg bot d4">✅ Found a slot with <strong>Dr. Rao</strong> at <strong>3:30 PM today</strong>. Shall I confirm your booking?</div>
+          <div class="typing"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<section class="stats-band">
+  <div class="stats-inner">
+    <div class="sband-stat reveal">
+      <span class="sband-icon">🏥</span>
+      <span class="sband-num" data-target="500">0</span>
+      <div class="sband-label">Hospitals & Clinics</div>
+    </div>
+    <div class="sband-stat reveal">
+      <span class="sband-icon">🧑‍⚕️</span>
+      <span class="sband-num" data-target="50000">0</span>
+      <div class="sband-label">Patients Managed</div>
+    </div>
+    <div class="sband-stat reveal">
+      <span class="sband-icon">👨‍⚕️</span>
+      <span class="sband-num" data-target="1200">0</span>
+      <div class="sband-label">Doctors Onboard</div>
+    </div>
+    <div class="sband-stat reveal">
+      <span class="sband-icon">⭐</span>
+      <span class="sband-num" data-target="98">0</span>
+      <div class="sband-label">% Satisfaction Rate</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="test-section" id="about">
+  <div class="test-glow test-glow-1"></div>
+  <div class="test-glow test-glow-2"></div>
+  <div class="section-label">What People Say</div>
+  <h2 class="section-title">Loved by healthcare<br/>teams across India</h2>
+  <p class="section-sub">Real stories from real hospitals — how HealthSphere is changing the way care is delivered.</p>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p>HealthSphere slashed our appointment no-shows by 40% in the first month. The automated reminders are a game-changer for our busy OPD.</p>
+      <div class="test-author">
+        <div class="test-av">DR</div>
+        <div class="test-info"><strong>Dr. Rajan Mehta</strong><span>CMO, Apollo Clinics Pune</span></div>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p>The pharmacy module transformed our operations. Prescription verification is instant now and we haven't had a stock-out since we went live.</p>
+      <div class="test-author">
+        <div class="test-av">SP</div>
+        <div class="test-info"><strong>Sneha Patil</strong><span>Head Pharmacist, City Hospital Bhubaneswar</span></div>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p>As a patient, booking an appointment, seeing my reports, and paying bills — all in one app — finally feels like healthcare caught up to 2025.</p>
+      <div class="test-author">
+        <div class="test-av">AK</div>
+        <div class="test-info"><strong>Arjun Kumar</strong><span>Patient · Hyderabad</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta-card reveal">
+    <div class="cta-orb1"></div><div class="cta-orb2"></div>
+    <h2>Ready to transform<br/><span>your hospital?</span></h2>
+    <p>Join 500+ hospitals already using HealthSphere. Set up your hospital in under 10 minutes.</p>
+    <div class="cta-btns">
+      <a href="Patient-login.html" class="btn-cta-p">📅 Book Appointment</a>
+      <a href="#" class="btn-cta-o">🚨 Emergency Call</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo-row">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="flg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#5B3FC4"/><stop offset="100%" stop-color="#22C069"/></linearGradient></defs><path d="M50 12C28 12,12 28,12 48C12 68,28 82,50 92C72 82,88 68,88 48C88 28,72 12,50 12Z" fill="url(#flg)" opacity="0.2" stroke="url(#flg)" stroke-width="2.5"/><path d="M44 36L44 64M30 50L58 50" stroke="url(#flg)" stroke-width="7" stroke-linecap="round"/></svg>
+        <span>HealthSphere</span>
+      </div>
+      <p>Support That Cares — making healthcare management effortless for every hospital, clinic, and patient across India.</p>
+      <div class="social-row">
+        <div class="soc-btn">𝕏</div>
+        <div class="soc-btn">in</div>
+        <div class="soc-btn">f</div>
+        <div class="soc-btn">▶</div>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Patient Portal</a></li><li><a href="#">Doctor Dashboard</a></li><li><a href="#">Admin Panel</a></li><li><a href="#">Pharmacy Module</a></li><li><a href="#">Analytics</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Documentation</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Status Page</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 HealthSphere. All rights reserved.</span><span>Made with ❤️ for better healthcare in India</span></div>
+</footer>
+
+<script>
+// Nav scroll
+const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
+
+// Reveal observer
+const ro=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*90);ro.unobserve(e.target)}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>ro.observe(el));
+
+// Count-up
+function countUp(el,target){
+  const dur=2000,step=target/(dur/16);let cur=0;
+  const t=setInterval(()=>{
+    cur=Math.min(cur+step,target);
+    if(target>=1000) el.textContent=(cur/1000).toFixed(cur>=1000?1:0)+'K+';
+    else el.textContent=Math.floor(cur)+(cur>=target?(target<100?'%':'+'):'');
+    if(cur>=target)clearInterval(t);
+  },16);
+}
+const cro=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){countUp(e.target,+e.target.dataset.target);cro.unobserve(e.target)}});
+},{threshold:0.5});
+document.querySelectorAll('[data-target]').forEach(el=>cro.observe(el));
+
+// Module tabs
+const modules={
+  patient:{title:'Patient Management',desc:'Complete patient lifecycle management — from first registration to discharge summary. Every patient gets a rich digital profile with medical history, emergency contacts, and a full audit trail.',feats:['Patient Registration & Profile Management','Full Medical History Records','Appointment & Prescription History','Emergency Contact Information'],rows:[{icon:'👤',cls:'p',t:'Priya Sharma',s:'Patient ID #PX-4821 · Registered Today',b:'Active',bc:'badge-green'},{icon:'📋',cls:'g',t:'Medical History Updated',s:'Diabetes Type 2 · Hypertension',b:'EMR',bc:'badge-blue'},{icon:'📞',cls:'o',t:'Emergency Contact',s:'Rahul Sharma · +91 98765 43210',b:'Contact',bc:'badge-amber'},{icon:'💊',cls:'p',t:'3 Active Prescriptions',s:'Last updated 2 hours ago',b:'Active',bc:'badge-green'}]},
+  doctor:{title:'Doctor Management',desc:'Full doctor onboarding, verification, and scheduling in one place. Manage specializations, set availability windows, and track consultation records with ease.',feats:['Doctor Registration & Verification','Specialization Management','Availability Scheduling','Patient Consultation Records'],rows:[{icon:'👨‍⚕️',cls:'p',t:'Dr. Ananya Sharma',s:'Cardiologist · Verified',b:'Online',bc:'badge-green'},{icon:'📅',cls:'g',t:'Today: 12 Appointments',s:'Next: Raj Patel at 2:00 PM',b:'Busy',bc:'badge-amber'},{icon:'📋',cls:'o',t:'Prescription Written',s:'Metformin 500mg · 30 days',b:'EMR',bc:'badge-blue'},{icon:'⭐',cls:'p',t:'Rating: 4.9/5',s:'Based on 342 patient reviews',b:'Top Dr.',bc:'badge-green'}]},
+  appointments:{title:'Appointment Management',desc:'Intelligent scheduling engine with real-time availability, automated reminders, and smart queue management to eliminate waiting room chaos.',feats:['Book, Cancel & Reschedule Appointments','Automated SMS & Email Reminders','Real-time Queue Management','Walk-in & Online Booking'],rows:[{icon:'✅',cls:'g',t:'Appointment Confirmed',s:'Sneha Patel · Dr. Gupta · 11:00 AM',b:'Confirmed',bc:'badge-green'},{icon:'🔔',cls:'p',t:'Reminder Sent',s:'SMS & Email · 2 hours before',b:'Sent',bc:'badge-blue'},{icon:'🔄',cls:'o',t:'Rescheduled',s:'Arun Joshi · moved to 3:30 PM',b:'Updated',bc:'badge-amber'},{icon:'⏳',cls:'p',t:'Queue: 4 Patients Waiting',s:'Avg. wait time: 12 minutes',b:'Live',bc:'badge-green'}]},
+  pharmacy:{title:'Pharmacy Management',desc:'End-to-end pharmacy operations — from prescription intake to medicine dispensing. Never run out of critical stock with intelligent low-stock alerts.',feats:['Medicine Inventory Management','Prescription Verification','Automated Stock Alerts','Medicine Sales Tracking'],rows:[{icon:'💊',cls:'g',t:'Paracetamol 500mg',s:'Stock: 2,400 units · Sufficient',b:'In Stock',bc:'badge-green'},{icon:'⚠️',cls:'o',t:'Low Stock Alert',s:'Amoxicillin 250mg · 48 units left',b:'Alert',bc:'badge-amber'},{icon:'✅',cls:'p',t:'Prescription Verified',s:'Patient #PX-4821 · 3 medicines',b:'Dispensed',bc:'badge-blue'},{icon:'📈',cls:'g',t:'Today\'s Sales',s:'₹ 42,800 · 186 items sold',b:'+12%',bc:'badge-green'}]},
+  billing:{title:'Billing & Payments',desc:'Auto-generate itemized bills, accept UPI, card, and net banking payments, and send PDF invoices — all without touching a spreadsheet.',feats:['Auto-Generate Bills & Invoices','Online UPI & Card Payments','Payment History & Reports','Invoice PDF Download'],rows:[{icon:'🧾',cls:'g',t:'Invoice #INV-20890',s:'Priya Sharma · ₹ 3,200',b:'Paid',bc:'badge-green'},{icon:'💳',cls:'p',t:'UPI Payment Received',s:'₹ 1,500 · PhonePe · 2 min ago',b:'Success',bc:'badge-green'},{icon:'⏳',cls:'o',t:'Invoice #INV-20891',s:'Raj Patel · ₹ 8,400',b:'Pending',bc:'badge-amber'},{icon:'📊',cls:'g',t:'Today\'s Revenue',s:'₹ 1,24,500 · 38 transactions',b:'+18%',bc:'badge-green'}]},
+  emr:{title:'Electronic Medical Records',desc:'HIPAA-aligned digital health records for every patient. Store, retrieve, and share medical data securely — from diagnosis to discharge in one click.',feats:['Digital Health Records & Diagnoses','Lab Reports & Imaging Storage','Prescription & Treatment History','Secure Sharing Between Departments'],rows:[{icon:'🗃️',cls:'p',t:'Health Record #EMR-7741',s:'Priya Sharma · Last updated today',b:'Active',bc:'badge-green'},{icon:'🔬',cls:'g',t:'Lab Report Uploaded',s:'CBC + Lipid Panel · Dr. Sharma',b:'New',bc:'badge-blue'},{icon:'💊',cls:'o',t:'Treatment History',s:'5 visits · 12 months',b:'Complete',bc:'badge-green'},{icon:'🔒',cls:'p',t:'Secure Share',s:'Sent to Dept. of Cardiology',b:'Shared',bc:'badge-blue'}]}
+};
+
+function switchModule(btn,key){
+  document.querySelectorAll('.mod-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const m=modules[key];
+  document.getElementById('modTitle').textContent=m.title;
+  document.getElementById('modDesc').textContent=m.desc;
+  const fl=document.getElementById('modFeats');
+  fl.innerHTML=m.feats.map(f=>`<li><span class="mod-check">✓</span>${f}</li>`).join('');
+  const mv=document.getElementById('modVisual');
+  mv.innerHTML=m.rows.map(r=>`<div class="mod-row"><div class="mod-row-icon ${r.cls}">${r.icon}</div><div class="mod-row-text"><strong>${r.t}</strong><span>${r.s}</span></div><span class="mod-row-badge ${r.bc}">${r.b}</span></div>`).join('');
+  mv.style.animation='none';mv.offsetHeight;mv.style.animation='fadeSlideUp 0.4s ease both';
+}
+</script>
+</body>
+</html>

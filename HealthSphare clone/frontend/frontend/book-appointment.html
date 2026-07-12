@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Appointment - HealthSphere</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#5B3FC4;
+margin-bottom:25px;
+}
+
+.form-group{
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin-bottom:6px;
+font-weight:600;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.doctor-card{
+display:none;
+background:#f8f9ff;
+padding:20px;
+border-radius:12px;
+margin:20px 0;
+border-left:5px solid #5B3FC4;
+}
+
+.doctor-card h3{
+color:#5B3FC4;
+margin-bottom:10px;
+}
+
+.btn{
+width:100%;
+padding:14px;
+background:#22C069;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+.btn:hover{
+background:#169a51;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>📅 Book Appointment</h1>
+
+
+
+<div class="form-group">
+
+<label>Select Doctor</label>
+
+<select id="doctor" onchange="showDoctorDetails()">
+
+    <option value="">Select Doctor</option>
+
+</select>
+</div>
+
+<div class="doctor-card" id="doctorCard">
+
+<h3>Doctor Information</h3>
+
+<p><b>Name:</b>
+<span id="doctorName"></span></p>
+
+<p><b>Specialization:</b>
+<span id="doctorSpecialization"></span></p>
+
+<p><b>Consultation Fee:</b>
+₹<span id="doctorFee"></span></p>
+
+<p><b>Status:</b> Available</p>
+
+</div>
+
+<div class="form-group">
+<label>Appointment Date</label>
+<input type="date" id="date">
+</div>
+
+<div class="form-group">
+<label>Appointment Time</label>
+<input type="time" id="time">
+</div>
+
+<div class="form-group">
+<label>Reason for Visit</label>
+<textarea id="reason" rows="4"></textarea>
+</div>
+
+<button class="btn" onclick="bookAppointment()">
+Book Appointment
+</button>
+
+</div>
+
+<script>
+
+const patient = JSON.parse(localStorage.getItem("patient"));
+
+console.log(patient)
+
+if (!patient) {
+
+    alert("Please login first");
+
+    window.location.href = "Patient-login.html";
+
+}
+
+// Load doctors when page opens
+window.onload = function () {
+
+    loadDoctors();
+
+};
+// ===============================
+// Load Doctors from PostgreSQL
+// ===============================
+async function loadDoctors() {
+
+    try {
+
+        const response = await fetch("http://localhost:5000/api/doctors");
+
+        const data = await response.json();
+
+        console.log(data);
+        console.log(data.doctors);
+
+        const select = document.getElementById("doctor");
+        const selectedSpecialization =
+localStorage.getItem("selectedSpecialization");
+console.log("Selected Specialization:", selectedSpecialization);
+        // Remove old options
+        select.innerHTML = '<option value="">Select Doctor</option>';
+
+        data.doctors.forEach(doc => {
+            console.log("Doctor:", doc.specialization);
+console.log("Selected:", selectedSpecialization);
+
+    // Show only selected specialization if chatbot set one
+    if (
+        selectedSpecialization &&
+        doc.specialization.toLowerCase() !== selectedSpecialization.toLowerCase()
+    ) {
+        return;
+    }
+
+    select.innerHTML += `
+        <option
+            value="${doc.doctor_id}"
+            data-name="${doc.first_name} ${doc.last_name}"
+            data-specialization="${doc.specialization}"
+            data-fee="${doc.consultation_fee}">
+
+            Dr. ${doc.first_name} ${doc.last_name} (${doc.specialization})
+
+        </option>
+    `;
+
+});
+
+// Clear specialization after loading
+localStorage.removeItem("selectedSpecialization");
+// Auto-select doctor if only one doctor is available
+if (select.options.length === 2) {
+
+    select.selectedIndex = 1;
+
+    showDoctorDetails();
+
+}
+    } catch (error) {
+
+        console.log(error);
+        alert("Unable to load doctors");
+
+    }
+
+}
+
+// ===============================
+// Show Doctor Details
+// ===============================
+function showDoctorDetails() {
+
+    const select = document.getElementById("doctor");
+
+    if (select.value === "") {
+
+        document.getElementById("doctorCard").style.display = "none";
+        return;
+
+    }
+
+    const option = select.options[select.selectedIndex];
+
+    document.getElementById("doctorCard").style.display = "block";
+
+    document.getElementById("doctorName").innerText =
+        option.dataset.name;
+
+    document.getElementById("doctorSpecialization").innerText =
+        option.dataset.specialization;
+
+  document.getElementById("doctorFee").innerText =
+    option.dataset.fee;
+
+}
+
+// ===============================
+// Book Appointment
+// ===============================
+async function bookAppointment() {
+
+     const patient_id = patient.user_id;
+
+    const doctor_id =
+        document.getElementById("doctor").value;
+
+    const appointment_date =
+        document.getElementById("date").value;
+
+    const appointment_time =
+        document.getElementById("time").value;
+
+    const reason =
+        document.getElementById("reason").value;
+
+    if (
+        !patient_id ||
+        !doctor_id ||
+        !appointment_date ||
+        !appointment_time ||
+        !reason
+    ) {
+
+        alert("Please fill all fields");
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            "http://localhost:5000/api/appointments/book",
+
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    user_id: patient_id,
+                    doctor_id: doctor_id,
+                    appointment_date: appointment_date,
+                    appointment_time: appointment_time,
+                    reason: reason
+
+                })
+
+            }
+
+        );
+
+        const result = await response.json();
+
+        alert(result.message);
+
+        if (result.success) {
+
+            
+            document.getElementById("doctor").selectedIndex = 0;
+            document.getElementById("date").value = "";
+            document.getElementById("time").value = "";
+            document.getElementById("reason").value = "";
+
+            document.getElementById("doctorCard").style.display = "none";
+
+            window.location.href = "Patient-dashboard.html";
+
+        }
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("Server Error");
+
+    }
+
+}
+
+
+</script>
+
+</body>
+</html>
+

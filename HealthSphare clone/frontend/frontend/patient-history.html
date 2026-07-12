@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Patient History</title>
+
+<style>
+
+body{
+font-family:Segoe UI;
+background:#f4f7fc;
+padding:30px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+color:#2563eb;
+margin-bottom:25px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#2563eb;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>📋 Patient History</h1>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Time</th>
+<th>Doctor</th>
+<th>Specialization</th>
+<th>Reason</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody id="historyTable">
+
+<tr>
+<td colspan="6">
+No History Found
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const params =
+new URLSearchParams(window.location.search);
+
+const patientId =
+params.get("patient_id");
+
+async function loadHistory(){
+
+try{
+
+const response = await fetch(
+`http://localhost:5000/api/appointments/history/${patientId}`
+);
+
+const data =
+await response.json();
+
+const table =
+document.getElementById("historyTable");
+
+table.innerHTML = "";
+
+if(
+!data.success ||
+data.history.length===0
+){
+
+table.innerHTML =
+"<tr><td colspan='6'>No History Found</td></tr>";
+
+return;
+
+}
+
+data.history.forEach(item=>{
+
+table.innerHTML += `
+
+<tr>
+
+<td>${item.appointment_date}</td>
+
+<td>${item.appointment_time}</td>
+
+<td>
+Dr. ${item.first_name} ${item.last_name}
+</td>
+
+<td>${item.specialization}</td>
+
+<td>${item.reason}</td>
+
+<td>${item.status}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+window.onload =
+loadHistory;
+
+</script>
+
+</body>
+</html>

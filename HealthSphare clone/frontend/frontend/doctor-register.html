@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Registration - HealthSphere</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#E0F7FA,#F1FFF8,#D1FAE5);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+width:100%;
+max-width:550px;
+background:white;
+padding:35px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+.logo{
+text-align:center;
+margin-bottom:20px;
+}
+
+.logo img{
+width:90px;
+height:90px;
+object-fit:contain;
+}
+
+.logo h2{
+color:#2563EB;
+margin-top:10px;
+}
+
+.portal{
+color:#22C069;
+font-size:18px;
+font-weight:bold;
+margin-top:5px;
+}
+
+input,
+select{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+border:2px solid #E5E7EB;
+border-radius:10px;
+outline:none;
+font-size:15px;
+}
+
+input:focus,
+select:focus{
+border-color:#22C069;
+}
+
+.register-btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:linear-gradient(
+135deg,
+#22C069,
+#2563EB
+);
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.register-btn:hover{
+opacity:.9;
+}
+
+.login-link{
+text-align:center;
+margin-top:15px;
+}
+
+.login-link a{
+text-decoration:none;
+color:#2563EB;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">
+
+<img src="./logo.png" alt="Logo">
+
+<h2>HealthSphere</h2>
+
+<div class="portal">
+👨‍⚕️ Doctor Registration
+</div>
+
+</div>
+
+<div class="row">
+
+<input
+type="text"
+id="first_name"
+placeholder="First Name">
+
+<input
+type="text"
+id="last_name"
+placeholder="Last Name">
+
+</div>
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="text" id="phone" placeholder="Phone Number">
+
+<select id="gender">
+<option value="">Select Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
+<select id="specialization">
+
+<option value="">Select Specialization</option>
+
+<option>Cardiologist</option>
+<option>Neurologist</option>
+<option>Dermatologist</option>
+<option>Orthopedic</option>
+<option>Pediatrician</option>
+<option>Gynecologist</option>
+<option>Psychiatrist</option>
+<option>ENT Specialist</option>
+<option>Ophthalmologist</option>
+<option>Dentist</option>
+<option>General Physician</option>
+<option>Urologist</option>
+<option>Oncologist</option>
+<option>Radiologist</option>
+<option>Pulmonologist</option>
+
+</select>
+
+<input type="text" id="experience"
+placeholder="Experience (e.g. 10 Years)">
+
+<input type="text" id="qualification"
+placeholder="Qualification">
+
+<input type="password" id="password"
+placeholder="Password">
+
+<button
+class="register-btn"
+onclick="registerDoctor()">
+Register Doctor
+</button>
+
+<div class="login-link">
+Already have an account?
+<a href="Doctor-login.html">Login</a>
+</div>
+
+</div>
+
+<script>
+
+async function registerDoctor() {
+
+    const doctor = {
+
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        gender: document.getElementById("gender").value,
+        specialization: document.getElementById("specialization").value,
+        experience: document.getElementById("experience").value,
+        qualification: document.getElementById("qualification").value,
+        password: document.getElementById("password").value
+
+    };
+
+    if (
+        doctor.first_name === "" ||
+        doctor.last_name === "" ||
+        doctor.email === "" ||
+        doctor.phone === "" ||
+        doctor.gender === "" ||
+        doctor.specialization === "" ||
+        doctor.password === ""
+    ) {
+        alert("Please fill all required fields");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/api/doctors/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(doctor)
+            }
+        );
+
+        const result = await response.json();
+
+        alert(result.message);
+
+        if (result.success) {
+            window.location.href = "doctor-login.html";
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert("Server Error");
+    }
+
+}
+
+</script>
+
+</body>
+</html>
